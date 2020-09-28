@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers\Test;
+namespace App\Controllers;
 
 class Test extends BaseController
 {
