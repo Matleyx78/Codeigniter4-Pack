@@ -4,6 +4,6 @@
     "require": {
         "php": "^7.2",
         "codeigniter4/framework": "*",
-        "codeigniter4/translations": "*",
+        "codeigniter4/translations": "*"
     }
 }
