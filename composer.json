@@ -5,7 +5,7 @@
         "php": "^7.2",
         "codeigniter4/framework": "*",
         "codeigniter4/translations": "*",
-        "benedmunds/CodeIgniter-Ion-Auth": "4.x-dev",
+        "benedmunds/codeigniter-ion-auth": "4.x-dev",
         "twbs/bootstrap": "*"
     }
 }
