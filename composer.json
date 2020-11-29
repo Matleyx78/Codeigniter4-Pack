@@ -5,10 +5,10 @@
     "require": {
         "php": "^7.2",
         "codeigniter4/translations": "*"
-    }
+    },
     "autoload": {
 		"psr-4": {
 			"Matleyx\\CI4P\\": "src"
 		}
-	},
+	}
 }
