@@ -7,4 +7,9 @@
         "codeigniter4/translations": "*",
         "benedmunds/codeigniter-ion-auth":"4.x-dev"
     }
+    "autoload": {
+		"psr-4": {
+			"Matleyx\\CI4P\\": "src"
+		}
+	},
 }
