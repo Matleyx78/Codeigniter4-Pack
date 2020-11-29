@@ -4,6 +4,5 @@
     "require": {
         "php": "^7.2",
         "codeigniter4/translations": "*",
-        "twbs/bootstrap": "*"
     }
 }
