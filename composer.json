@@ -1,6 +1,7 @@
 {
     "name": "matleyx/ci4-pack",
     "description": "A short description of what your package does",
+    "license": "MIT",
     "require": {
         "php": "^7.2",
         "codeigniter4/translations": "*",
