@@ -4,8 +4,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.2",
-        "codeigniter4/translations": "*",
-        "benedmunds/codeigniter-ion-auth":"4.x-dev"
+        "codeigniter4/translations": "*"
     }
     "autoload": {
 		"psr-4": {
