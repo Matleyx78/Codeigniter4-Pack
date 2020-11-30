@@ -202,7 +202,7 @@ echo $part7;
 	<div class="container">
 		<p class="text-muted navbar-text">
 			<em>
-				&copy; 2018 www.chiuna.it - <?php //echo CI_VERSION; ?>
+				&copy; 2018 www.chiuna.it - powered by CodeIgniter <?php echo \CodeIgniter\CodeIgniter::CI_VERSION; ?>
 			</em>
 		</p>
 	</div>
