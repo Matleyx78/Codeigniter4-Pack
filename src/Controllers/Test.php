@@ -22,7 +22,7 @@ class Test extends BaseController
 		$data['mysql'] = $cal->primo_del_mese();
 		$data['ris2'] = mysql_to_human1($data['mysql']);
 		
-        return view('test/test',$data);
+        return view('test/testview',$data);
     }
 
 } 
