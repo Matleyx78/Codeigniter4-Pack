@@ -1,4 +1,5 @@
 composer create-project codeigniter4/appstarter
+entering in directory appstarter
 composer require codeigniter4/translations
 composer require matleyx/ci4-pack
 make writable writable
