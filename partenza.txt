@@ -1,5 +1,6 @@
 composer create-project codeigniter4/appstarter
 composer require codeigniter4/translations
+composer require matleyx/ci4-pack
 make writable writable
 Create db
 Setting the new db
@@ -9,6 +10,8 @@ updating config/database.php
 composer config minimum-stability dev
 composer config repositories.ionAuth vcs git@github.com:benedmunds/CodeIgniter-Ion-Auth.git
 composer require benedmunds/CodeIgniter-Ion-Auth:4.x-dev
+add in config/autoload.php = 'IonAuth' => ROOTPATH . 'CodeIgniter-Ion-Auth',
+add in basecontroller = $this->ionAuth = new \IonAuth\Libraries\IonAuth(); 
 copy ionauthroutefile in vendor/benedmunds/CodeIgniter-Ion-Auth/config
 php spark migrate -n IonAuth
 php spark db:seed IonAuth\\Database\\Seeds\\IonAuthSeeder
