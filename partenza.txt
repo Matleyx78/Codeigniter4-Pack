@@ -16,3 +16,13 @@ add in basecontroller = $this->ionAuth = new \IonAuth\Libraries\IonAuth();
 copy ionauthroutefile in vendor/benedmunds/CodeIgniter-Ion-Auth/config
 php spark migrate -n IonAuth
 php spark db:seed IonAuth\\Database\\Seeds\\IonAuthSeeder
+
+
+composer create-project codeigniter4/appstarter
+entering in directory appstarter
+composer require codeigniter4/translations
+composer require matleyx/ci4-pack
+
+composer config minimum-stability dev
+composer config prefer-stable true
+composer require agungsugiarto/boilerplate
