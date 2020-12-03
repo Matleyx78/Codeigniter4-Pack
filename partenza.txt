@@ -2,20 +2,24 @@ composer create-project codeigniter4/appstarter
 entering in directory appstarter
 composer require codeigniter4/translations
 composer require matleyx/ci4-pack
-make writable writable
+make writable writable chmod 777 -R ./writable
+
 Create db
-Setting the new db
 setting env
 updating config/app.php
 updating config/database.php
+add in config/autoload.php = 'IonAuth' => ROOTPATH . 'CodeIgniter-Ion-Auth',
+add in basecontroller = $this->ionAuth = new \IonAuth\Libraries\IonAuth(); 
+
 composer config minimum-stability dev
 composer config repositories.ionAuth vcs git@github.com:benedmunds/CodeIgniter-Ion-Auth.git
 composer require benedmunds/CodeIgniter-Ion-Auth:4.x-dev
-add in config/autoload.php = 'IonAuth' => ROOTPATH . 'CodeIgniter-Ion-Auth',
-add in basecontroller = $this->ionAuth = new \IonAuth\Libraries\IonAuth(); 
+
 copy ionauthroutefile in vendor/benedmunds/CodeIgniter-Ion-Auth/config
 php spark migrate -n IonAuth
 php spark db:seed IonAuth\\Database\\Seeds\\IonAuthSeeder
+composer require bvrignaud/ci4-admin
+
 
 
 composer create-project codeigniter4/appstarter
@@ -26,3 +30,9 @@ composer require matleyx/ci4-pack
 composer config minimum-stability dev
 composer config prefer-stable true
 composer require agungsugiarto/boilerplate
+
+make writable writable
+Create db
+setting env
+updating config/app.php
+updating config/database.php
