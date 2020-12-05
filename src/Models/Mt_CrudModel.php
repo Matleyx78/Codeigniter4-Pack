@@ -4,7 +4,7 @@ namespace Matleyx\CI4P\Models;
 
 use CodeIgniter\Model;
 
-class CrudModel extends Model
+class Mt_CrudModel extends Model
 {
 	protected $db;
 
