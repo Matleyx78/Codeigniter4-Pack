@@ -8,7 +8,7 @@ use Matleyx\CI4P\Models\Mt_CrudModel;
 class Mt_crud extends BaseController
 {
 
-    use \CodeIgniter\API\ResponseTrait;
+    //use \CodeIgniter\API\ResponseTrait;
 
     public function index()
         {
@@ -18,7 +18,7 @@ class Mt_crud extends BaseController
         $data['keys']   = $array          = json_decode(json_encode($model->getc()), true);
         $fork           = $model->getd();
         $data['fork']   = $array          = json_decode(json_encode($fork), true);
-        return view('crud/crud', $data);
+        return view('Matleyx\CI4P\Views\crud\crud', $data);
         }
 
 }
