@@ -8,11 +8,11 @@
 		Matleyx Ci4
 	</title>
 
-	<link rel="stylesheet" href="<?php echo site_url(); ?>assets/bootstraporiginal/css/bootstrap.min.css">
-	<link rel="stylesheet" href="<?php echo site_url(); ?>assets/css-personal/bootstrap-submenu.min.css">
-	<link rel="stylesheet" href="<?php echo site_url(); ?>assets/css-personal/docs.css">
-	<link rel="stylesheet" href="<?php echo site_url(); ?>assets/css-personal/bootstrap-datetimepicker.css">
-	<link rel="stylesheet" href="<?php echo site_url(); ?>assets/css-personal/personal.css">
+	<link rel="stylesheet" href="<?php echo site_url(); ?>mat-assets/bootstraporiginal/css/bootstrap.min.css">
+	<link rel="stylesheet" href="<?php echo site_url(); ?>mat-assets/css-personal/bootstrap-submenu.min.css">
+	<link rel="stylesheet" href="<?php echo site_url(); ?>mat-assets/css-personal/docs.css">
+	<link rel="stylesheet" href="<?php echo site_url(); ?>mat-assets/css-personal/bootstrap-datetimepicker.css">
+	<link rel="stylesheet" href="<?php echo site_url(); ?>mat-assets/css-personal/personal.css">
 
 	<script type="text/javascript" src="<?php echo site_url(); ?>assets/jqueryoriginal/jquery.min.js">
 	</script>
@@ -34,7 +34,7 @@ $part1 = "
             <span class=\"icon-bar\"></span>
             <span class=\"icon-bar\"></span>
           </button>
-          <a class=\"navbar-brand\" href=".site_url().">Geal Spa - Trafileria</a>
+          <a class=\"navbar-brand\" href=".site_url().">Matleyx CI4</a>
         </div>
         <div id=\"navbar\" class=\"navbar-collapse collapse\">
 
@@ -208,11 +208,11 @@ echo $part7;
 	</div>
 </div>
 
-<script src="<?php echo site_url(); ?>assets/bootstraporiginal/js/bootstrap.js" defer>
+<script src="<?php echo site_url(); ?>mat-assets/bootstraporiginal/js/bootstrap.js" defer>
 </script>
-<script src="<?php echo site_url(); ?>assets/js-personal/bootstrap-submenu.js" defer>
+<script src="<?php echo site_url(); ?>mat-assets/js-personal/bootstrap-submenu.js" defer>
 </script>
-<script src="<?php echo site_url(); ?>assets/js-personal/docs.js" defer>
+<script src="<?php echo site_url(); ?>mat-assets/js-personal/docs.js" defer>
 </script>
 
 </body>
