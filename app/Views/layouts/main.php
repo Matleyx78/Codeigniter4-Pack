@@ -14,11 +14,11 @@
 	<link rel="stylesheet" href="<?php echo site_url(); ?>mat-assets/css-personal/bootstrap-datetimepicker.css">
 	<link rel="stylesheet" href="<?php echo site_url(); ?>mat-assets/css-personal/personal.css">
 
-	<script type="text/javascript" src="<?php echo site_url(); ?>assets/jqueryoriginal/jquery.min.js">
+	<script type="text/javascript" src="<?php echo site_url(); ?>mat-assets/jqueryoriginal/jquery.min.js">
 	</script>
-	<script type="text/javascript" src="<?php echo site_url(); ?>assets/js-personal/moment-with-locales.min.js">
+	<script type="text/javascript" src="<?php echo site_url(); ?>mat-assets/js-personal/moment-with-locales.min.js">
 	</script>
-	<script type="text/javascript" src="<?php echo site_url(); ?>assets/js-personal/bootstrap-datetimepicker.js">
+	<script type="text/javascript" src="<?php echo site_url(); ?>mat-assets/js-personal/bootstrap-datetimepicker.js">
 	</script>
 
 </head>
