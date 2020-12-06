@@ -3,7 +3,8 @@
     "description": "A short description of what your package does",
     "license": "MIT",
     "require": {
-        "php": "^7.2"
+        "php": "^7.2",
+	 "nelexa/zip": "*"
     },
     "autoload": {
 		"psr-4": {
