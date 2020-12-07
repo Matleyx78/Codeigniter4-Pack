@@ -4,7 +4,10 @@
     "license": "MIT",
     "require": {
         "php": "^7.2",
-	 "nelexa/zip": "*"
+	 "nelexa/zip": "*",
+	 "phpoffice/phpspreadsheet": "*",
+	 "mpdf/mpdf": "*"
+	    
     },
     "autoload": {
 		"psr-4": {
