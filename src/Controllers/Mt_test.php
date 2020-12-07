@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Controllers;
+namespace Matleyx\CI4P\Controllers;
 
+use App\Controllers\BaseController;
 use Matleyx\CI4P\Libraries\Calendario;
 
-class Test extends BaseController
+class Mt_test extends BaseController
 {
     // available to GET requests only
     public function index()
@@ -22,7 +23,6 @@ class Test extends BaseController
 		$data['mysql'] = $cal->primo_del_mese();
 		$data['ris2'] = mysql_to_human1($data['mysql']);
 		
-        return view('test/testview',$data);
+        return view('Matleyx\CI4P\Views\test\testview',$data);
     }
-
 } 
