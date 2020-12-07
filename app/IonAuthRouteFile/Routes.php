@@ -15,3 +15,25 @@ $routes->group('auth', ['namespace' => 'IonAuth\Controllers'], function ($routes
 	// $routes->post('reset_password/(:hash)', 'Auth::reset_password/$1');
 	// ...
 });
+//CI4-admin by bvrignaud
+
+$routes->group('admin', ['namespace' => 'Admin\Controllers'], function ($routes) {
+	$routes->get('/', 'Home::index');
+
+	$routes->group('users', ['namespace' => 'Admin\Controllers'], function ($routes) {
+		$routes->get('/', 'Users::index');
+		$routes->add('create', 'Users::createUser');
+		$routes->add('edit/(:num)', 'Users::edit/$1');
+		$routes->add('activate/(:num)', 'Users::activate/$1');
+		$routes->add('deactivate/(:num)', 'Users::deactivate/$1');
+		$routes->add('edit_group/(:num)', 'Users::editGroup/$1');
+		$routes->add('create_group', 'Users::createGroup');
+	});
+
+	$routes->group('informations', ['namespace' => 'Admin\Controllers'], function ($routes) {
+		$routes->get('/', 'Informations::index');
+		$routes->get('displayPhpInfo', 'Informations::displayPhpInfo');
+		$routes->add('exportDatabase', 'Informations::exportDatabase');
+		$routes->post('sendEmailForTest', 'Informations::sendEmailForTest');
+	});
+});
