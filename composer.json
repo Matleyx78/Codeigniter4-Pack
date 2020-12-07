@@ -6,7 +6,8 @@
         "php": "^7.2",
 	 "nelexa/zip": "*",
 	 "phpoffice/phpspreadsheet": "*",
-	 "mpdf/mpdf": "*"
+	 "mpdf/mpdf": "*",
+	    "jpgraph/jpgraph": "*"
 	    
     },
     "autoload": {
