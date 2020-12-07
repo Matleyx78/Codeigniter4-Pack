@@ -6,35 +6,36 @@ use CodeIgniter\Model;
 
 class Mt_CrudModel extends Model
 {
-	protected $db;
+    protected $db;
 
-	public function __construct()
-	{
-		$this->db = db_connect();
-	}
+    public function __construct()
+        {
+        $this->db = db_connect();
+        }
 
-	public function geta()
-	{
+    public function getAllTables()
+        {
 
-		$ris = $this->db->listTables();
-		return $ris;
-	}
+        $tables = $this->db->listTables();
+        return $tables;
+        }
 
-	public function getb()
-	{
-		$ris = $this->db->getFieldData('users_groups');
-		return $ris;
-	}
+    public function getAllFields($table)
+        {
+        $fields = $this->db->getFieldData($table);
+        return $fields;
+        }
 
-	public function getc()
-	{
-		$ris = $this->db->getIndexData('users_groups');
-		return $ris;
-	}
+    public function getAllIndex($table)
+        {
+        $indx = $this->db->getIndexData($table);
+        return $indx;
+        }
 
-	public function getd()
-	{
-		$ris = $this->db->getForeignKeyData('users_groups');
-		return $ris;
-	}
+    public function getAllFK($table)
+        {
+        $foreikeys = $this->db->getForeignKeyData($table);
+        return $foreikeys;
+        }
+
 }
