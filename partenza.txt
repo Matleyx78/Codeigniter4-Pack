@@ -20,8 +20,6 @@ php spark migrate -n IonAuth
 php spark db:seed IonAuth\\Database\\Seeds\\IonAuthSeeder
 composer require bvrignaud/ci4-admin
 
-
-
 composer create-project codeigniter4/appstarter
 entering in directory appstarter
 composer require codeigniter4/translations
