@@ -20,9 +20,9 @@
                             {
                             ?>
                             <option value="<?php echo $value; ?>">
-                            <?php echo $value; ?>
+                                <?php echo $value; ?>
                             </option>
-<?php } ?>
+                        <?php } ?>
                     </select>
                 </div>
             </div>
@@ -59,7 +59,7 @@
             </div>
         </div>
 
-<?php echo form_close(); ?>
+        <?php echo form_close(); ?>
 
     </div>
 </div>

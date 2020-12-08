@@ -23,7 +23,7 @@ class Mt_test extends BaseController
         else
             {
             $data['ris'] = 'no';
-        }
+            }
         $data['giorno1'] = now();
         $data['mysql']   = $cal->primo_del_mese();
         $data['ris2']    = mysql_to_human1($data['mysql']);

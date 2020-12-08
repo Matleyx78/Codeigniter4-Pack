@@ -19,7 +19,7 @@ function array_msort($array, $cols)
         foreach ($array as $k => $row)
             {
             $colarr[$col]['_' . $k] = strtolower($row[$col]);
-        }
+            }
         }
     $eval = 'array_multisort(';
     foreach ($cols as $col => $order)
