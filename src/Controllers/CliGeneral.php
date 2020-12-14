@@ -8,6 +8,7 @@ class CliGeneral extends BaseController
     {
     public function test_mail()
         {
+        //test
         $email = \Config\Services::email();
 
         $email->setFrom('z@z.com', 'Your Name');
