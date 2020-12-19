@@ -15,10 +15,6 @@ class Mt_crud extends BaseController
 		$model          = new Mt_CrudModel();
 		$table='cartellini_produzione';
 		$data['result'] = $model->getAllTables();
-		$data['fields'] = $array          = json_decode(json_encode($model->getAllFields($table)), true);
-		$data['keys']   = $array          = json_decode(json_encode($model->getAllIndex($table)), true);
-		$fork           = $model->getAllFK($table);
-		$data['fork']   = $array          = json_decode(json_encode($fork), true);
 		return view('Matleyx\CI4P\Views\crud\crud', $data);
 	}
 
