@@ -26,30 +26,7 @@
                     </select>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="data" class="col-md-2 control-label">
-                    Controller
-                </label>
-                <div class="col-md-4">
-                    <input type="text" name="cname" class="form-control" id="cname" />
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="data" class="col-md-2 control-label">
-                    Nome record
-                </label>
-                <div class="col-md-4">
-                    <input type="text" name="fname" class="form-control" id="fname" />
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="data" class="col-md-2 control-label">
-                    Campo Obsolescenza
-                </label>
-                <div class="col-md-4">
-                    <input type="text" name="obsofield" class="form-control" id="obsofield" />
-                </div>
-            </div>
+
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <button type="submit" name="download" class="btn btn-success">

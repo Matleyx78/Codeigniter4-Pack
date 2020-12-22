@@ -7,17 +7,27 @@ use CodeIgniter\Model;
 class Mt_TestModel extends Model
 {
     protected $db;
+	//protected $dba;
 
     public function __construct()
         {
         $this->db = db_connect();
+		//$this->dba = \Config\Database::connect('adhoc');
         }
 
     public function geta()
         {
+
         $ris = $this->db->listTables();
         return $ris;
         }
+
+	public function getadhoc()
+	{
+
+		$ris = $this->dba->listTables();
+		return $ris;
+	}
 
     public function getb()
         {
@@ -36,5 +46,4 @@ class Mt_TestModel extends Model
         $ris = $this->db->getForeignKeyData('users_groups');
         return $ris;
         }
-
 }
