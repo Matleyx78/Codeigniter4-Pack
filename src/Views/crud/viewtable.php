@@ -18,7 +18,7 @@
                             <label for="cname" class="control-label">Name Controller</label>
                             <div class="form-group">
                                     <?php //echo form_error('cname'); ?>
-                                    <input type="text" name="cname" value="" class="form-control" id="cname" />
+                                    <input type="text" name="cname" value="<?php echo (isset($cname) ? $cname : '');?>" class="form-control" id="cname" />
                                     <input type="hidden" name="tname" value="<?php echo $tname; ?>" class="form-control" id="tname" />
                             </div>
                         </div>
@@ -51,6 +51,15 @@
                                 </select>
                             </div>    
                         </div>                         
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                            <label for="pkey" class="control-label">Primary Key</label>
+                            <div class="form-group">
+                                    <?php //echo form_error('anar_peso_teo'); ?>
+                                    <input type="text" name="pkey" value="<?php echo (isset($pkey) ? $pkey : 'Not Found');?>" class="form-control" id="pkey" readonly/>
+                            </div>
+                        </div>                       
                     </div>
                     <div class="form-group">
                             <button type="submit" class="btn btn-success">

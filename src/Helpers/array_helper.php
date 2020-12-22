@@ -19,7 +19,7 @@ function array_msort($array, $cols)
         foreach ($array as $k => $row)
             {
             $colarr[$col]['_' . $k] = strtolower($row[$col]);
-            }
+        }
         }
     $eval = 'array_multisort(';
     foreach ($cols as $col => $order)
@@ -34,7 +34,7 @@ function array_msort($array, $cols)
         foreach ($arr as $k => $v)
             {
             $k             = substr($k, 1);
-            if (!isset($ret[$k]))
+            if ( !isset($ret[$k]) )
                 $ret[$k]       = $array[$k];
             $ret[$k][$col] = $array[$k][$col];
             }
@@ -50,7 +50,7 @@ function unique_multidim_array($array, $key)//unique_multidim_array
 
     foreach ($array as $val)
         {
-        if (!in_array($val[$key], $key_array))
+        if ( !in_array($val[$key], $key_array) )
             {
             $key_array[$i]  = $val[$key];
             $temp_array[$i] = $val;
@@ -58,4 +58,10 @@ function unique_multidim_array($array, $key)//unique_multidim_array
         $i++;
         }
     return $temp_array;
+    }
+
+function o_t_a($object)//object to array
+    {
+    $array = json_decode(json_encode($object), true);
+    return $array;
     }

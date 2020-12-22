@@ -7,8 +7,9 @@ use Matleyx\CI4P\Models\Mt_CrudModel;
 use PhpZip\ZipFile;
 
 class Mt_crud extends BaseController
-{
-	    protected $model;
+    {
+
+    protected $model;
     protected $table_name;
     protected $primary_key;
     protected $controller_name;
@@ -19,7 +20,7 @@ class Mt_crud extends BaseController
 
     public function __construct()
         {
-        helper('form');
+        helper('form', 'array');
         $this->model = new Mt_CrudModel();
         }
 
@@ -30,25 +31,33 @@ class Mt_crud extends BaseController
         $table          = 'cartellini_produzione';
         $data['result'] = $this->model->getAllTables();
         return view('Matleyx\CI4P\Views\crud\crud', $data);
-    }
+        }
 
     public function crudgen()
         {
         if ( $this->request->getMethod() === 'post' )
             {
             $incoming['tname']     = $this->request->getPost('tname');
-            $incoming['cname']     = $this->request->getPost('cname');
+            $incoming['cname']     = ucfirst(str_replace(' ', '', ucwords(preg_replace('/[^a-zA-Z0-9\x7f-\xff]++/', ' ', $incoming['tname']))));
             $incoming['fname']     = $this->request->getPost('fname');
             $incoming['obsofield'] = $this->request->getPost('obsofield');
-            $incoming['fields']    = $this->model->getAllFields($incoming['tname']);
-            $incoming['prk']       = $this->model->getAllIndex($incoming['tname']);
-            $incoming['fk']        = $this->model->getAllFK($incoming['tname']);
+            $obj                   = $this->model->getAllFields($incoming['tname']);
+            $incoming['fields']    = o_t_a($obj);
+            $incoming['allIndex']  = o_t_a($this->model->getAllIndex($incoming['tname']));
+            //$array = (array) $yourObject;
+            foreach ($incoming['allIndex'] as $in)
+                {
+                if ( $in['type'] === 'PRIMARY' )
+                    {
+                    $incoming['pkey'] = $in['fields'][0];
+                    }
+                }
+            $incoming['fk'] = $this->model->getAllFK($incoming['tname']);
 
             $data = $incoming;
 
             return view('Matleyx\CI4P\Views\crud\viewtable', $data);
 
-//<<<<<<< HEAD
 //			$incoming['funz']      = $this->build_model($incoming['cname']);
 //			$nomefile              = 'provanomefile.php';
 //			$zipFile               = new \PhpZip\ZipFile();
@@ -111,23 +120,29 @@ class Mt_crud extends BaseController
             {
             return redirect()->route('mt_crud');
             }
-        }	    
-	    
-	protected function build_model()
-	{
-		$file_a = '<?php namespace App\Models;
+        }
+
+    protected function build_model()
+        {
+        $file_a = '<?php namespace App\Models;
+
 use CodeIgniter\Model;
+
 class UserModel extends Model
 {
     protected $table      = \'users\';
     protected $primaryKey = \'id\';
+
     protected $returnType     = \'array\';
     protected $useSoftDeletes = true;
+
     protected $allowedFields = [\'name\', \'email\'];
+
     protected $useTimestamps = false;
     protected $createdField  = \'created_at\';
     protected $updatedField  = \'updated_at\';
     protected $deletedField  = \'deleted_at\';
+
 	protected $validationRules    = [
 			\'username\'     => \'required|alpha_numeric_space|min_length[3]\',
 			\'email\'        => \'required|valid_email|is_unique[users.email]\',
@@ -143,6 +158,7 @@ class UserModel extends Model
 		
 	protected $skipValidation     = false;
 }';
-		return $file_a;
-	}
-}
+        return $file_a;
+        }
+
+    }
