@@ -7,9 +7,8 @@ use Matleyx\CI4P\Models\Mt_CrudModel;
 use PhpZip\ZipFile;
 
 class Mt_crud extends BaseController
-    {
-
-    protected $model;
+{
+	    protected $model;
     protected $table_name;
     protected $primary_key;
     protected $controller_name;
@@ -31,7 +30,7 @@ class Mt_crud extends BaseController
         $table          = 'cartellini_produzione';
         $data['result'] = $this->model->getAllTables();
         return view('Matleyx\CI4P\Views\crud\crud', $data);
-        }
+    }
 
     public function crudgen()
         {
@@ -49,6 +48,7 @@ class Mt_crud extends BaseController
 
             return view('Matleyx\CI4P\Views\crud\viewtable', $data);
 
+//<<<<<<< HEAD
 //			$incoming['funz']      = $this->build_model($incoming['cname']);
 //			$nomefile              = 'provanomefile.php';
 //			$zipFile               = new \PhpZip\ZipFile();
@@ -111,29 +111,23 @@ class Mt_crud extends BaseController
             {
             return redirect()->route('mt_crud');
             }
-        }
-
-    protected function build_model()
-        {
-        $file_a = '<?php namespace App\Models;
-
+        }	    
+	    
+	protected function build_model()
+	{
+		$file_a = '<?php namespace App\Models;
 use CodeIgniter\Model;
-
 class UserModel extends Model
 {
     protected $table      = \'users\';
     protected $primaryKey = \'id\';
-
     protected $returnType     = \'array\';
     protected $useSoftDeletes = true;
-
     protected $allowedFields = [\'name\', \'email\'];
-
     protected $useTimestamps = false;
     protected $createdField  = \'created_at\';
     protected $updatedField  = \'updated_at\';
     protected $deletedField  = \'deleted_at\';
-
 	protected $validationRules    = [
 			\'username\'     => \'required|alpha_numeric_space|min_length[3]\',
 			\'email\'        => \'required|valid_email|is_unique[users.email]\',
@@ -149,7 +143,6 @@ class UserModel extends Model
 		
 	protected $skipValidation     = false;
 }';
-        return $file_a;
-        }
-
-    }
+		return $file_a;
+	}
+}
