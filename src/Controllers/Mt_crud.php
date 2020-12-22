@@ -29,7 +29,8 @@ class Mt_crud extends BaseController
         //$model          = new CrudtestModel();
         $table          = 'cartellini_produzione';
         $data['result'] = $this->model->getAllTables();
-        ret
+        return view('Matleyx\CI4P\Views\crud\crud', $data);
+    }
 
     public function crudgen()
         {
