@@ -59,8 +59,101 @@
                                     <?php //echo form_error('anar_peso_teo'); ?>
                                     <input type="text" name="pkey" value="<?php echo (isset($pkey) ? $pkey : 'Not Found');?>" class="form-control" id="pkey" readonly/>
                             </div>
-                        </div>                       
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                            <label for="prefixfields" class="control-label">Fields Prefix</label>
+                            <div class="form-group">
+                                    <?php //echo form_error('anar_peso_teo'); ?>
+                                    <input type="text" name="prefixfields" value="" class="form-control" id="prefixfields" />
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                            <label for="rettype" class="control-label">Return Type</label>
+                            <div class="form-group">
+                                    <?php //echo form_error('anar_riservato'); ?>
+                                <select name="rettype" class="form-control">
+                                    <option value="1" selected="selected" class="form-control" id="rettype">Array</option>
+                                    <option value="0" class="form-control" id="rettype">Entities</option>
+                                </select>
+                            </div>    
+                        </div>                        
                     </div>
+                    <div class="row clearfix">
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                            <label for="created" class="control-label">Create Field</label>
+                            <div class="form-group">
+                                    <?php //echo form_error('anar_riservato'); ?>
+                                <select name="created" class="form-control">
+                                    <?php foreach ($alldatetime as $ac) { ?>
+                                    <option value="<?php echo $ac['name']; ?>" selected="selected" class="form-control" id="created"><?php echo $ac['name']; ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>    
+                        </div>   
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                            <label for="updated" class="control-label">Updated Field</label>
+                            <div class="form-group">
+                                    <?php //echo form_error('anar_riservato'); ?>
+                                <select name="updated" class="form-control">
+                                    <?php foreach ($alldatetime as $ac) { ?>
+                                    <option value="<?php echo $ac['name']; ?>" selected="selected" class="form-control" id="updated"><?php echo $ac['name']; ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>    
+                        </div> 
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                            <label for="deleted" class="control-label">deleted Field</label>
+                            <div class="form-group">
+                                    <?php //echo form_error('anar_riservato'); ?>
+                                <select name="deleted" class="form-control">
+                                    <?php foreach ($alldatetime as $ac) { ?>
+                                    <option value="<?php echo $ac['name']; ?>" selected="selected" class="form-control" id="deleted"><?php echo $ac['name']; ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>    
+                        </div> 
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                            <label for="lastuser" class="control-label">Last User Field</label>
+                            <div class="form-group">
+                                    <?php //echo form_error('anar_riservato'); ?>
+                                <select name="lastuser" class="form-control">
+                                    <?php foreach ($alldatetime as $ac) { ?>
+                                    <option value="<?php echo $ac['name']; ?>" selected="selected" class="form-control" id="lastuser"><?php echo $ac['name']; ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>    
+                        </div>                      
+                    </div>                        
+                    <div class="row clearfix">    
+                        <div class="col-lg-12">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    Fields list
+                                </div>
+                                <div class="panel-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">                
+                                            <tr>
+                                                <th>Name</th> 
+                                                <th>Type</th>
+                                                <th>Allowed fields</th>
+                                                <th>In view fields</th>
+                                            </tr>
+                                    <?php foreach($fields as $f){ ?>
+                                            <tr>
+
+                                                <td><?php echo $f['name']; ?></td> 
+                                                <td><?php echo $f['type']; ?></td>
+                                                <td><?php echo $f['name']; ?></td> 
+                                                <td><?php echo $f['type']; ?></td>
+                                            </tr>
+                                            <?php } ?>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                  
+                    </div>    
                     <div class="form-group">
                             <button type="submit" class="btn btn-success">
                                     <i class="fa fa-check"></i> Salva

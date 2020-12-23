@@ -42,9 +42,9 @@ class Mt_crud extends BaseController
             $incoming['fname']     = $this->request->getPost('fname');
             $incoming['obsofield'] = $this->request->getPost('obsofield');
             $obj                   = $this->model->getAllFields($incoming['tname']);
+            $incoming['fk'] = $this->model->getAllFK($incoming['tname']);
             $incoming['fields']    = o_t_a($obj);
             $incoming['allIndex']  = o_t_a($this->model->getAllIndex($incoming['tname']));
-            //$array = (array) $yourObject;
             foreach ($incoming['allIndex'] as $in)
                 {
                 if ( $in['type'] === 'PRIMARY' )
@@ -52,8 +52,19 @@ class Mt_crud extends BaseController
                     $incoming['pkey'] = $in['fields'][0];
                     }
                 }
-            $incoming['fk'] = $this->model->getAllFK($incoming['tname']);
-
+            foreach ($incoming['fields'] as $f)
+                {
+                    if ($f['type'] == 'datetime' OR $f['type'] == 'timestamp')
+                        {
+                            $incoming['alldatetime'][] = $f;
+                        }else
+                            {
+                                if ($f['name'] != $incoming['pkey'])
+                                    {
+                                        $incoming['allnodatetime'][] = $f;
+                                    }
+                            }
+                }
             $data = $incoming;
 
             return view('Matleyx\CI4P\Views\crud\viewtable', $data);
