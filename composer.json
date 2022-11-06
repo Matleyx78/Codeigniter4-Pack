@@ -3,7 +3,7 @@
     "description": "A short description of what your package does",
     "license": "MIT",
     "require": {
-        "php": "^7.2",
+        "php": "^8.0",
         "nelexa/zip": "*",
         "phpoffice/phpspreadsheet": "*",
         "mpdf/mpdf": "*",
