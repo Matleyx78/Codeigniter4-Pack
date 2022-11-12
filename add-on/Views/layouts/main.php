@@ -55,7 +55,7 @@ if ($loggedin)
 }
 else
 {
-	$part2 = "                          <li>".anchor('auth/login', ' Login','><span class="glyphicon glyphicon-log-out"></span')."</li>
+	$part2 = "                          <li>".anchor('login', ' Login','><span class="glyphicon glyphicon-log-out"></span')."</li>
 ";
 };
 
