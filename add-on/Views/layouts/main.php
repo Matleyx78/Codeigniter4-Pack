@@ -50,7 +50,7 @@ $nome = 'nomignolo';
 if ($loggedin)
 {
 	$part2 = "                          <p class=\"navbar-text\">".$nome." </p>
-                                <li>".anchor('auth/logout', ' Logout','><span class="glyphicon glyphicon-log-out"></span')."</li>
+                                <li>".anchor('logout', ' Logout','><span class="glyphicon glyphicon-log-out"></span')."</li>
 ";
 }
 else
