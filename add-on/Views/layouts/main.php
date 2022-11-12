@@ -23,7 +23,7 @@
 
 </head>
 <?php
-$this->ionAuth = new \IonAuth\Libraries\IonAuth();
+//$this->ionAuth = new \IonAuth\Libraries\IonAuth();
 $part1 = "
     <nav class=\"navbar navbar-default navbar-fixed-top navbar-inverse\">
       <div class=\"container\">
@@ -44,9 +44,12 @@ $part1 = "
 
 echo $part1;
 $part2 ="";
-if ($this->ionAuth->loggedIn())
+$loggedin = true;
+$isadmin = true;
+$nome = 'nomignolo';
+if ($loggedin)
 {
-	$part2 = "                          <p class=\"navbar-text\">".$this->ionAuth->loggedIn()." </p>
+	$part2 = "                          <p class=\"navbar-text\">".$nome." </p>
                                 <li>".anchor('auth/logout', ' Logout','><span class="glyphicon glyphicon-log-out"></span')."</li>
 ";
 }
@@ -58,7 +61,7 @@ else
 
 echo $part2;
 $part3 ="";
-if ($this->ionAuth->isAdmin())
+if ($isadmin)
 {
 	$part3 = "                          <li class=\"dropdown\">
                                 <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">Admin <span class=\"caret\"></span></a>
@@ -132,7 +135,7 @@ $part4 = "
 echo $part4;
 
 $part5 ="";
-if ($this->ionAuth->isAdmin())
+if ($isadmin)
 {
 	$part5 = "                  <li class=\"dropdown\">
                                 <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">Ammi <span class=\"caret\"></span></a>
@@ -153,9 +156,9 @@ if ($this->ionAuth->isAdmin())
 echo $part5;
 
 	$part6 ="";
-	if ($this->ionAuth->loggedIn())
+	if ($loggedin)
 	{
-		if ($this->ionAuth->inGroup('1'))
+		if ($loggedin)
 		{
 			$part6 = "                  <li class=\"dropdown\">
                                 <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">Ammi <span class=\"caret\"></span></a>
@@ -217,3 +220,4 @@ echo $part7;
 
 </body>
 </html>
+
