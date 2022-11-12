@@ -17,7 +17,10 @@ class Mt_test extends BaseController
         {
         helper('date');
         $cal = new Calendario();
-        if ( $this->ionAuth->loggedIn() )
+        $test = true;
+        //if ( $this->ionAuth->loggedIn() )
+        
+        if ( $test )
             {
             $data['ris'] = 'si';
             }
