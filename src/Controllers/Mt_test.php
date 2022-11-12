@@ -7,7 +7,7 @@ use Matleyx\CI4P\Models\Mt_TestModel;
 use Matleyx\CI4P\Libraries\Calendario;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use Mpdf\Mpdf;
+use Mpdf\MpdfA;
 
 class Mt_test extends BaseController
     {
