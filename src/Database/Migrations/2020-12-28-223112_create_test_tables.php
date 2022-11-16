@@ -2,134 +2,68 @@
 
 declare(strict_types=1);
 
-namespace CodeIgniter\Shield\Database\Migrations;
+namespace Matleyx\CI4P\Controllers;
 
 use CodeIgniter\Database\Migration;
 
 class CreateTestTables extends Migration
 {
+    private $prefix_table = 'cmms_';
+    private $tab_buildings_name = array('tname' => 'worksite', 'pr' => 'wosi',);
+    private $tab_sectors_name = array('tname' => 'impianti', 'pr' => 'impi',);
+    private $tab_assets_name = array('tname' => 'macchine', 'pr' => 'macc',);
+
     public function up(): void
     {
-        // Users Table
-        $this->forge->addField([
-            'id'             => ['type' => 'int', 'constraint' => 11, 'unsigned' => true, 'auto_increment' => true],
-            'username'       => ['type' => 'varchar', 'constraint' => 30, 'null' => true],
-            'status'         => ['type' => 'varchar', 'constraint' => 255, 'null' => true],
-            'status_message' => ['type' => 'varchar', 'constraint' => 255, 'null' => true],
-            'active'         => ['type' => 'tinyint', 'constraint' => 1, 'null' => 0, 'default' => 0],
-            'last_active'    => ['type' => 'datetime', 'null' => true],
-            'created_at'     => ['type' => 'datetime', 'null' => true],
-            'updated_at'     => ['type' => 'datetime', 'null' => true],
-            'deleted_at'     => ['type' => 'datetime', 'null' => true],
-        ]);
-        $this->forge->addPrimaryKey('id');
-        $this->forge->addUniqueKey('username');
-        $this->forge->createTable('users');
 
-        /*
-         * Auth Identities Table
-         * Used for storage of passwords, access tokens, social login identities, etc.
-         */
-        $this->forge->addField([
-            'id'           => ['type' => 'int', 'constraint' => 11, 'unsigned' => true, 'auto_increment' => true],
-            'user_id'      => ['type' => 'int', 'constraint' => 11, 'unsigned' => true],
-            'type'         => ['type' => 'varchar', 'constraint' => 255],
-            'name'         => ['type' => 'varchar', 'constraint' => 255, 'null' => true],
-            'secret'       => ['type' => 'varchar', 'constraint' => 255],
-            'secret2'      => ['type' => 'varchar', 'constraint' => 255, 'null' => true],
-            'expires'      => ['type' => 'datetime', 'null' => true],
-            'extra'        => ['type' => 'text', 'null' => true],
-            'force_reset'  => ['type' => 'tinyint', 'constraint' => 1, 'default' => 0],
-            'last_used_at' => ['type' => 'datetime', 'null' => true],
-            'created_at'   => ['type' => 'datetime', 'null' => true],
-            'updated_at'   => ['type' => 'datetime', 'null' => true],
-        ]);
-        $this->forge->addPrimaryKey('id');
-        $this->forge->addUniqueKey(['type', 'secret']);
-        $this->forge->addKey('user_id');
-        $this->forge->addForeignKey('user_id', 'users', 'id', '', 'CASCADE');
-        $this->forge->createTable('auth_identities');
+        //$prefix_table = 'cmms_';
+        //$tab_buildings_name = array('tname' => 'worksite', 'pr' => 'wosi',);
+        //$tab_sectors_name = array('tname' => 'impianti', 'pr' => 'impi',);
+        //$tab_assets_name = array('tname' => 'macchine', 'pr' => 'macc',);
+        $tab_immediate_jobs_name = array('tname' => 'interventi_immediati', 'pr' => 'imjo',);
+        $tab_scheduled_jobs_name = array('tname' => 'interventi_programmati', 'pr' => 'scjo',);
+        $tab_executed_jobs_name = array('tname' => 'interventi_eseguiti', 'pr' => 'exjo',);
 
-        /**
-         * Auth Login Attempts Table
-         * Records login attempts. A login means users think it is a login.
-         * To login, users do action(s) like posting a form.
-         */
-        $this->forge->addField([
-            'id'         => ['type' => 'int', 'constraint' => 11, 'unsigned' => true, 'auto_increment' => true],
-            'ip_address' => ['type' => 'varchar', 'constraint' => 255],
-            'user_agent' => ['type' => 'varchar', 'constraint' => 255, 'null' => true],
-            'id_type'    => ['type' => 'varchar', 'constraint' => 255],
-            'identifier' => ['type' => 'varchar', 'constraint' => 255],
-            'user_id'    => ['type' => 'int', 'constraint' => 11, 'unsigned' => true, 'null' => true], // Only for successful logins
-            'date'       => ['type' => 'datetime'],
-            'success'    => ['type' => 'tinyint', 'constraint' => 1],
-        ]);
-        $this->forge->addPrimaryKey('id');
-        $this->forge->addKey(['id_type', 'identifier']);
-        $this->forge->addKey('user_id');
-        // NOTE: Do NOT delete the user_id or identifier when the user is deleted for security audits
-        $this->forge->createTable('auth_logins');
 
-        /*
-         * Auth Token Login Attempts Table
-         * Records Bearer Token type login attempts.
-         */
+        // Buildings
         $this->forge->addField([
-            'id'         => ['type' => 'int', 'constraint' => 11, 'unsigned' => true, 'auto_increment' => true],
-            'ip_address' => ['type' => 'varchar', 'constraint' => 255],
-            'user_agent' => ['type' => 'varchar', 'constraint' => 255, 'null' => true],
-            'id_type'    => ['type' => 'varchar', 'constraint' => 255],
-            'identifier' => ['type' => 'varchar', 'constraint' => 255],
-            'user_id'    => ['type' => 'int', 'constraint' => 11, 'unsigned' => true, 'null' => true], // Only for successful logins
-            'date'       => ['type' => 'datetime'],
-            'success'    => ['type' => 'tinyint', 'constraint' => 1],
+            'id_' . $this->tab_buildings_name['pr']             => ['type' => 'int', 'constraint' => 11, 'unsigned' => true, 'auto_increment' => true],
+            $this->tab_buildings_name['pr'] . '_description'    => ['type' => 'varchar', 'constraint' => 150],
+            $this->tab_buildings_name['pr'] . '_created_at'     => ['type' => 'datetime', 'null' => true],
+            $this->tab_buildings_name['pr'] . '_updated_at'     => ['type' => 'datetime', 'null' => true],
+            $this->tab_buildings_name['pr'] . '_deleted_at'     => ['type' => 'datetime', 'null' => true],
         ]);
-        $this->forge->addPrimaryKey('id');
-        $this->forge->addKey(['id_type', 'identifier']);
-        $this->forge->addKey('user_id');
-        // NOTE: Do NOT delete the user_id or identifier when the user is deleted for security audits
-        $this->forge->createTable('auth_token_logins');
+        $this->forge->addPrimaryKey('id_' . $this->tab_buildings_name['pr']);
+        $this->forge->createTable($this->prefix_table . '' . $this->tab_buildings_name['tname']);
 
-        /*
-         * Auth Remember Tokens (remember-me) Table
-         * @see https://paragonie.com/blog/2015/04/secure-authentication-php-with-long-term-persistence
-         */
+        // Sectors
         $this->forge->addField([
-            'id'              => ['type' => 'int', 'constraint' => 11, 'unsigned' => true, 'auto_increment' => true],
-            'selector'        => ['type' => 'varchar', 'constraint' => 255],
-            'hashedValidator' => ['type' => 'varchar', 'constraint' => 255],
-            'user_id'         => ['type' => 'int', 'constraint' => 11, 'unsigned' => true],
-            'expires'         => ['type' => 'datetime'],
-            'created_at'      => ['type' => 'datetime', 'null' => false],
-            'updated_at'      => ['type' => 'datetime', 'null' => false],
+            'id_' . $this->tab_sectors_name['pr']           => ['type' => 'int', 'constraint' => 11, 'unsigned' => true, 'auto_increment' => true],
+            $this->tab_sectors_name['pr'] . '_description'         => ['type' => 'varchar', 'constraint' => 150],
+            $this->tab_sectors_name['pr'] . '_id_' . $this->tab_buildings_name['pr']         => ['type' => 'int', 'constraint' => 11, 'unsigned' => true],
+            $this->tab_sectors_name['pr'] . '_created_at'     => ['type' => 'datetime', 'null' => true],
+            $this->tab_sectors_name['pr'] . '_updated_at'     => ['type' => 'datetime', 'null' => true],
+            $this->tab_sectors_name['pr'] . '_deleted_at'     => ['type' => 'datetime', 'null' => true],
         ]);
-        $this->forge->addPrimaryKey('id');
-        $this->forge->addUniqueKey('selector');
-        $this->forge->addForeignKey('user_id', 'users', 'id', '', 'CASCADE');
-        $this->forge->createTable('auth_remember_tokens');
+        $this->forge->addPrimaryKey('id_' . $this->tab_sectors_name['pr']);
+        $this->forge->addKey($this->tab_sectors_name['pr'] . '_id_' . $this->tab_buildings_name['pr']);
+        $this->forge->addForeignKey($this->tab_sectors_name['pr'] . '_id_' . $this->tab_buildings_name['pr'], $this->prefix_table . '' . $this->tab_buildings_name['tname'], 'id_' . $this->tab_buildings_name['pr'], '', 'CASCADE');
+        $this->forge->createTable($this->prefix_table . '' . $this->tab_sectors_name['tname']);
 
-        // Groups Users Table
+        // Assets
         $this->forge->addField([
-            'id'         => ['type' => 'int', 'constraint' => 11, 'unsigned' => true, 'auto_increment' => true],
-            'user_id'    => ['type' => 'int', 'constraint' => 11, 'unsigned' => true],
-            'group'      => ['type' => 'varchar', 'constraint' => 255, 'null' => false],
-            'created_at' => ['type' => 'datetime', 'null' => false],
+            'id_' . $this->tab_assets_name['pr']           => ['type' => 'int', 'constraint' => 11, 'unsigned' => true, 'auto_increment' => true],
+            $this->tab_assets_name['pr'] . '_description'         => ['type' => 'varchar', 'constraint' => 150],
+            $this->tab_assets_name['pr'] . '_id_' . $this->tab_sectors_name['pr']         => ['type' => 'int', 'constraint' => 11, 'unsigned' => true],
+            $this->tab_assets_name['pr'] . '_created_at'     => ['type' => 'datetime', 'null' => true],
+            $this->tab_assets_name['pr'] . '_updated_at'     => ['type' => 'datetime', 'null' => true],
+            $this->tab_assets_name['pr'] . '_deleted_at'     => ['type' => 'datetime', 'null' => true],
         ]);
-        $this->forge->addPrimaryKey('id');
-        $this->forge->addForeignKey('user_id', 'users', 'id', '', 'CASCADE');
-        $this->forge->createTable('auth_groups_users');
+        $this->forge->addPrimaryKey('id_' . $this->tab_assets_name['pr']);
+        $this->forge->addKey($this->tab_assets_name['pr'] . '_id_' . $this->tab_sectors_name['pr']);
+        $this->forge->addForeignKey($this->tab_assets_name['pr'] . '_id_' . $this->tab_sectors_name['pr'], $this->prefix_table . '' . $this->tab_sectors_name['tname'], 'id_' . $this->tab_sectors_name['pr'], '', 'CASCADE');
+        $this->forge->createTable($this->prefix_table . '' . $this->tab_assets_name['tname']);
 
-        // Users Permissions Table
-        $this->forge->addField([
-            'id'         => ['type' => 'int', 'constraint' => 11, 'unsigned' => true, 'auto_increment' => true],
-            'user_id'    => ['type' => 'int', 'constraint' => 11, 'unsigned' => true],
-            'permission' => ['type' => 'varchar', 'constraint' => 255, 'null' => false],
-            'created_at' => ['type' => 'datetime', 'null' => false],
-        ]);
-        $this->forge->addPrimaryKey('id');
-        $this->forge->addForeignKey('user_id', 'users', 'id', '', 'CASCADE');
-        $this->forge->createTable('auth_permissions_users');
     }
 
     // --------------------------------------------------------------------
@@ -138,9 +72,9 @@ class CreateTestTables extends Migration
     {
         $this->db->disableForeignKeyChecks();
 
-        $this->forge->dropTable('auth_logins', true);
-        $this->forge->dropTable('auth_token_logins', true);
-        $this->forge->dropTable('auth_remember_tokens', true);
+        $this->forge->dropTable($this->prefix_table . '' . $this->tab_assets_name['tname'], true);
+        $this->forge->dropTable($this->prefix_table . '' . $this->tab_buildings_name['tname'], true);
+        $this->forge->dropTable($this->prefix_table . '' . $this->tab_sectors_name['tname'], true);
         $this->forge->dropTable('auth_identities', true);
         $this->forge->dropTable('auth_groups_users', true);
         $this->forge->dropTable('auth_permissions_users', true);
