@@ -7,7 +7,7 @@ use Matleyx\CI4P\Models\Mt_TestModel;
 use Matleyx\CI4P\Libraries\Calendario;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use Mpdf\MpdfAa;
+use Mpdf\Mpdf;
 
 class Mt_test extends BaseController
     {
@@ -16,21 +16,13 @@ class Mt_test extends BaseController
     public function index()
         {
         helper('date');
+
         $cal = new Calendario();
-        $test = true;
-        //if ( $this->ionAuth->loggedIn() )
-        
-        if ( $test )
-            {
-            $data['ris'] = 'si';
-            }
-        else
-            {
-            $data['ris'] = 'no';
-            }
+        $giorno = '2021-03-15 00:00:00';
         $data['giorno1'] = now();
-        $data['mysql']   = $cal->primo_del_mese();
-        $data['ris2']    = mysql_to_human1($data['mysql']);
+        $data['mysql']   = $cal->primo_del_mese($giorno);
+        //var_dump($data['mysql']);
+        //$data['ris2']    = mysql_to_human1($data['mysql']);
 
         return view('Matleyx\CI4P\Views\test\testview', $data);
         }
@@ -39,7 +31,7 @@ class Mt_test extends BaseController
         {
         helper('date');
         $model = new Mt_TestModel();
-        //$data['result'] = $model->getadhoc();
+        $data['result'] = $model->getadhoc();
 
         return view('Matleyx\CI4P\Views\test\testview', $data);
         }
