@@ -5,9 +5,7 @@
     "require": {
         "php": "^8.0",
         "nelexa/zip": "*",
-        "phpoffice/phpspreadsheet": "*",
-        "mpdf/mpdf": "*",
-        "jpgraph/jpgraph": "*"
+        "phpoffice/phpspreadsheet": "*"
     },
     "autoload": {
         "psr-4": {
