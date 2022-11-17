@@ -44,10 +44,10 @@ $part1 = "
 
 echo $part1;
 $part2 ="";
-$loggedin = true;
-$isadmin = true;
 $nome = 'nomignolo';
-if ($loggedin)
+$user = auth()->user();
+
+if (auth()->loggedIn())
 {
 	$part2 = "                          <p class=\"navbar-text\">".$nome." </p>
                                 <li>".anchor('logout', ' Logout','><span class="glyphicon glyphicon-log-out"></span')."</li>
@@ -61,7 +61,7 @@ else
 
 echo $part2;
 $part3 ="";
-if ($isadmin)
+if (auth()->loggedIn() AND $user->inGroup('superadmin', 'admin'))
 {
 	$part3 = "                          <li class=\"dropdown\">
                                 <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">Admin <span class=\"caret\"></span></a>
@@ -135,7 +135,7 @@ $part4 = "
 echo $part4;
 
 $part5 ="";
-if ($isadmin)
+if (auth()->loggedIn() AND $user->inGroup('superadmin', 'admin'))
 {
 	$part5 = "                  <li class=\"dropdown\">
                                 <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">Ammi <span class=\"caret\"></span></a>
@@ -156,9 +156,9 @@ if ($isadmin)
 echo $part5;
 
 	$part6 ="";
-	if ($loggedin)
+	if (auth()->loggedIn())
 	{
-		if ($loggedin)
+		if (auth()->loggedIn())
 		{
 			$part6 = "                  <li class=\"dropdown\">
                                 <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">Ammi <span class=\"caret\"></span></a>
