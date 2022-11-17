@@ -49,7 +49,7 @@ $user = auth()->user();
 
 if (auth()->loggedIn())
 {
-	$part2 = "                          <p class=\"navbar-text\">".$nome." </p>
+	$part2 = "                          <p class=\"navbar-text\">".$user->username." </p>
                                 <li>".anchor('logout', ' Logout','><span class="glyphicon glyphicon-log-out"></span')."</li>
 ";
 }
