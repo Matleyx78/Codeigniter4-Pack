@@ -4,7 +4,7 @@ namespace {namespace}\Controllers;
 use CodeIgniter\Controller;
 use App\Models\{! nameModel !};
 
-class {! nameController !} extends Controller
+class {! nameController !} extends BaseController
 {
     protected ${! singularTable !};
 
