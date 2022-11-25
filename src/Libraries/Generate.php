@@ -1,19 +1,22 @@
 <?php
+
 namespace Matleyx\CI4P\Libraries;
+
 use Config\Autoload;
 use Config\Services;
 
 trait Generate
 {
 
-    protected function getPathOutput($folder='', $namespace = 'App'){
+    protected function getPathOutput($folder = '', $namespace = 'App')
+    {
         // Get namespace location form  PSR4 paths.
         $config = new Autoload();
         $location = $config->psr4[$namespace];
 
-        $path = rtrim($location, '/') . "/". $folder;
+        $path = rtrim($location, '/') . "/" . $folder;
 
-        return rtrim($this->normalizePath($path), '/ ') .'/';
+        return rtrim($this->normalizePath($path), '/ ') . '/';
     }
 
     protected function normalizePath($path)
@@ -33,28 +36,21 @@ trait Generate
         // Initialize testing variable
         $test = '';
 
-        foreach ($segments as $segment)
-        {
-            if ($segment != '.')
-            {
+        foreach ($segments as $segment) {
+            if ($segment != '.') {
                 $test = array_pop($parts);
 
-                if (is_null($test))
-                {
+                if (is_null($test)) {
                     $parts[] = $segment;
-                } else if ($segment == '..')
-                {
-                    if ($test == '..')
-                    {
+                } else if ($segment == '..') {
+                    if ($test == '..') {
                         $parts[] = $test;
                     }
 
-                    if ($test == '..' || $test == '')
-                    {
+                    if ($test == '..' || $test == '') {
                         $parts[] = $segment;
                     }
-                } else
-                {
+                } else {
                     $parts[] = $test;
                     $parts[] = $segment;
                 }
@@ -64,32 +60,28 @@ trait Generate
         return implode('/', $parts);
     }
 
-    protected function copyFile($path, $contents = null){
+    protected function copyFile($path, $contents = null)
+    {
         helper('filesystem');
 
         $folder = $this->getDirOfFile($path);
-        if (! is_dir($folder))
-        {
+        if (!is_dir($folder)) {
             $this->createDirectory($folder);
         }
 
-        if (! write_file($path, $contents))
-        {
+        if (!write_file($path, $contents)) {
             throw new \RuntimeException('Unable to create file');
         }
-
     }
 
     public function render($template_name, $data = [])
     {
-        if (empty($this->parser))
-        {
-            $path         = realpath(__DIR__.'/../Templates/').'/';
+        if (empty($this->parser)) {
+            $path         = realpath(__DIR__ . '/../Templates/') . '/';
             $this->parser = Services::parser($path);
         }
 
-        if (is_null($this->parser))
-        {
+        if (is_null($this->parser)) {
             throw new \RuntimeException('Unable to create Parser instance.');
         }
         $output = $this->parser
@@ -102,16 +94,36 @@ trait Generate
         return $output;
     }
 
-    protected function getFields($table){
+    protected function getFields($table)
+    {
         $this->db = \Config\Database::connect();
-        if ($this->db->tableExists($table))
-        {
+        if ($this->db->tableExists($table)) {
             return  $fields = $this->db->getFieldData($table);
-        }else{
+        } else {
             return false;
         }
     }
 
+    protected function getForeignkey($table)
+    {
+        $this->db = \Config\Database::connect();
+        if ($this->db->tableExists($table)) {
+            $fk_found = json_decode(json_encode($this->db->getForeignKeyData($table)), true);
+            if ($fk_found) {
+                foreach ($fk_found as $fk) {
+                    $result[$fk['column_name']] = array(
+                        'column_name' => $fk['column_name'],
+                        'foreign_table_name' => $fk['foreign_table_name'],
+                        'foreign_column_name' => $fk['foreign_column_name'],
+                        'fk_last' => substr($fk['foreign_table_name'], -3),
+                    );
+                }
+                return  $result;
+            }
+        } else {
+            return false;
+        }
+    }
     protected function getPrimaryKey($fields)
     {
         foreach ($fields as $field) {
@@ -121,98 +133,155 @@ trait Generate
         }
     }
 
-    protected function getDatesFromFields($fields){
-        foreach ($fields as $field){
-            if ((!$field->primary_key && !strpos($field->name, 'created_at') !== false && !strpos($field->name, 'updated_at') !== false && !strpos($field->name, 'deleted_at') !== false)){
-                if (!$field->primary_key && $field->name !== 'password'){
-                    $fields_th       []  =  "\t\t\t\t\t\t<th>".ucwords(str_replace('_',' ',($field->name)))."</th>";
+    protected function getDatesFromFields($fields, $foreignikeys)
+    {
+        foreach ($fields as $field) {
+            if ((!$field->primary_key && !strpos($field->name, 'created_at') !== false && !strpos($field->name, 'updated_at') !== false && !strpos($field->name, 'deleted_at') !== false)) {
+                if (!$field->primary_key && $field->name !== 'password') {
+                    $fields_th[]  =  "\t\t\t\t\t\t<th>" . ucwords(str_replace('_', ' ', ($field->name))) . "</th>";
                 }
-                if (!$field->primary_key && $field->name !== 'password'){
-                    $fields_td       []  =  "\t\t\t\t\t\t\t\t".'<td><?php echo $row[\''.$field->name.'\']; ?></td>';
+                if (!$field->primary_key && $field->name !== 'password') {
+                    $fields_td[]  =  "\t\t\t\t\t\t\t\t" . '<td><?php echo $row[\'' . $field->name . '\']; ?></td>';
                 }
-                $allowedFields   []  =  "'".$field->name."'";
-                $fields_get      []  =  "\t\t\t$" .$field->name.' = $this->request->getPost(\''.$field->name.'\');';
-                $fields_data     []  =  "\t\t\t'" .$field->name.'\' => $'.$field->name.'';  
-				$fields_val      []  =  "\t'".$field->name.'\'=>\'required\'';
-                $valueInput      []  =  '$(\'[name="'.$field->name.'"]\').val((data.'.$field->name.'));';
+                $allowedFields[]  =  "\t\t\t\t\t\t" ."'" . $field->name . "'";
+                $fields_get[]  =  "\t\t\t$" . $field->name . ' = $this->request->getPost(\'' . $field->name . '\');';
+                $fields_data[]  =  "\t\t\t'" . $field->name . '\' => $' . $field->name . '';
+                $fields_val[]  =  "\t'" . $field->name . '\'=>\'required\'';
+                $valueInput[]  =  '$(\'[name="' . $field->name . '"]\').val((data.' . $field->name . '));';
 
-                if ($this->getTypeInput($field->type)!='textarea'){
-                    $inputForm   []  =
-				"\t\t\t\t\t\t\t".'<div class="col-md-6">
-							    <label>'.ucwords(str_replace('_',' ',($field->name))).'</label>
-							    <input type="'.$this->getTypeInput($field->type).'" name="'.$field->name.'" class="form-control" id="'.$field->name.'" placeholder="'.ucwords(str_replace('_',' ',($field->name))).'">
-			                </div>'; 
-					$editForm   []  =
-				"\t\t\t\t\t\t\t".'<div class="col-md-6">
-							    <label class="form-label" for="'.$field->name.'">'.ucwords(str_replace('_',' ',($field->name))).'</label>
-							    <input type="'.$this->getTypeInput($field->type).'" name="'.$field->name.'" class="form-control" id="'.$field->name.'" value="<?php echo $value[\''.$field->name.'\']; ?>">
+                if (!empty($foreignikeys) AND array_key_exists($field->name, $foreignikeys)) {
+                    $inputForm[]  =
+                        "\t\t\t\t\t\t\t" . '<div class="col-md-6">
+							    <label>' . ucwords(str_replace('_', ' ', ($field->name))) . '</label>
+                                <select name="' . $field->name . '" class="form-control">
+                                    <?php foreach($' . $foreignikeys[$field->name]['foreign_table_name'] . ' as $' . $foreignikeys[$field->name]['fk_last'] . '): ?>
+                                        <option value="<?php echo $' . $foreignikeys[$field->name]['fk_last'] . '[\'' . $foreignikeys[$field->name]['foreign_column_name'] . '\']; ?>" class="form-control" id="' . $field->name . '"><?php echo $' . $foreignikeys[$field->name]['fk_last'] . '[\'' . $foreignikeys[$field->name]['foreign_column_name'] . '\']; ?></option>
+                                    <?php endforeach;?>
+                                </select>							    
 			                </div>';
-                }else{
-                    $inputForm   []  =
-				"\t\t\t\t\t\t\t".'<div class="col-md-12">
-							    <label class="form-label" for="'.$field->name.'">'.ucwords(str_replace('_',' ',($field->name))).'</label>
-							    <textarea name="'.$field->name.'" class="form-control" id="'.$field->name.'" placeholder="'.ucwords(str_replace('_',' ',($field->name))).'"></textarea>
-			                </div>';   
-					$editForm   []  =
-				"\t\t\t\t\t\t\t".'<div class="col-md-12">
-							    <label class="form-label" for="'.$field->name.'">'.ucwords(str_replace('_',' ',($field->name))).'</label>
-							    <textarea name="'.$field->name.'" class="form-control" id="'.$field->name.'"><?php echo $value[\''.$field->name.'\']; ?></textarea>
+                    $editForm[]  =
+                        "\t\t\t\t\t\t\t" . '<div class="col-md-6">
+                    <label>' . ucwords(str_replace('_', ' ', ($field->name))) . '</label>
+                    <select name="' . $field->name . '" class="form-control">
+                        <?php foreach($' . $foreignikeys[$field->name]['foreign_table_name'] . ' as $' . $foreignikeys[$field->name]['fk_last'] . '): ?>
+                            <option value="<?php echo $' . $foreignikeys[$field->name]['fk_last'] . '[\'' . $foreignikeys[$field->name]['foreign_column_name'] . '\']; ?>" <?php if ($value[\'' . $field->name . '\'] == $' . $foreignikeys[$field->name]['fk_last'] . '[\'' . $foreignikeys[$field->name]['foreign_column_name'] . '\']) echo "selected=\"selected\"";?> class="form-control" id="' . $field->name . '"><?php echo $' . $foreignikeys[$field->name]['fk_last'] . '[\'' . $foreignikeys[$field->name]['foreign_column_name'] . '\']; ?></option>
+                        <?php endforeach;?>
+                    </select>							    
+                </div>';
+                } elseif ($this->getTypeInput($field->type) != 'textarea') {
+                    $inputForm[]  =
+                        "\t\t\t\t\t\t\t" . '<div class="col-md-6">
+							    <label>' . ucwords(str_replace('_', ' ', ($field->name))) . '</label>
+							    <input type="' . $this->getTypeInput($field->type) . '" name="' . $field->name . '" class="form-control" id="' . $field->name . '" placeholder="' . ucwords(str_replace('_', ' ', ($field->name))) . '">
+			                </div>';
+                    $editForm[]  =
+                        "\t\t\t\t\t\t\t" . '<div class="col-md-6">
+							    <label class="form-label" for="' . $field->name . '">' . ucwords(str_replace('_', ' ', ($field->name))) . '</label>
+							    <input type="' . $this->getTypeInput($field->type) . '" name="' . $field->name . '" class="form-control" id="' . $field->name . '" value="<?php echo $value[\'' . $field->name . '\']; ?>">
+			                </div>';
+                } else {
+                    $inputForm[]  =
+                        "\t\t\t\t\t\t\t" . '<div class="col-md-12">
+							    <label class="form-label" for="' . $field->name . '">' . ucwords(str_replace('_', ' ', ($field->name))) . '</label>
+							    <textarea name="' . $field->name . '" class="form-control" id="' . $field->name . '" placeholder="' . ucwords(str_replace('_', ' ', ($field->name))) . '"></textarea>
+			                </div>';
+                    $editForm[]  =
+                        "\t\t\t\t\t\t\t" . '<div class="col-md-12">
+							    <label class="form-label" for="' . $field->name . '">' . ucwords(str_replace('_', ' ', ($field->name))) . '</label>
+							    <textarea name="' . $field->name . '" class="form-control" id="' . $field->name . '"><?php echo $value[\'' . $field->name . '\']; ?></textarea>
 			                </div>';
                 }
             }
         }
+        if ($foreignikeys !== false) {
+            foreach ($foreignikeys as $fk) {
+                $modeluse[] = 'use App\Models\\' . pascalize($fk['foreign_table_name']) . 'Model;';
+                $modelprotected[] = "\t" . 'protected $' . $fk['foreign_table_name'] . ';';
+                $modelconstruct[] = "\t\t" . '$this->' . $fk['foreign_table_name'] . ' = new ' . pascalize($fk['foreign_table_name']) . 'Model;';
+                $modeldatajoin[] = "\t\t" . '$data[\'' . $fk['foreign_table_name'] . '\'] = $this->' . $fk['foreign_table_name'] . '->findAll();';
+            }
+            $model_rows_join = '';
+            foreach ($foreignikeys as $fk) {        
+                $model_rows_join.= "\t\t".'$this->join(\'' . $fk['foreign_table_name'] . '\', \'' . $fk['foreign_table_name'] . '\' = \'' . $fk['foreign_table_name'] . $fk['foreign_column_name'] . '\');'."\n";
+            }
+            $modeljoin  = "\t".'public function j_findAll(){'."\n";
+            $modeljoin .= "\t\t".'$this->select(\'*\');'."\n";
+            $modeljoin .= $model_rows_join;
+            $modeljoin .= "\t\t".'return $this->findAll();'."\n";
+            $modeljoin .= "\t".'}'."\n";
+            $modeljoin .= "\t\n";
+            $modeljoin .= "\t".'public function j_find($id){'."\n";
+            $modeljoin .= "\t\t".'$this->select(\'*\');'."\n";
+            $modeljoin .= $model_rows_join;
+            $modeljoin .= "\t\t".'return $this->find($id);'."\n";
+            $modeljoin .= "\t".'}'."\n";
+            $modeljoin .= "\t\n";
 
+        } else {
+            $modeluse[] = '';
+            $modelprotected[] = '';
+            $modelconstruct[] = '';
+            $modeldatajoin[] = '';
+            $modeljoin = '';
+        }
         return array(
-            'fieldsTh'      => implode("\n",$fields_th),
-            'fieldsTd'      => implode("\n",$fields_td),
-            'allowedFields' => implode(',', $allowedFields),
-            'fieldsGet'     => implode("\n", $fields_get),
-            'fieldsData'    => implode(",\n", $fields_data),
-            'fieldsVal'     => implode(",\n", $fields_val),
-            'inputForm'     => implode("\n", $inputForm),
-            'editForm'      => implode("\n", $editForm),
-            'valueInput'    => implode("\n", $valueInput),
+            'fieldsTh'       => implode("\n", $fields_th),
+            'fieldsTd'       => implode("\n", $fields_td),
+            'allowedFields'  => implode(",\n", $allowedFields),
+            'fieldsGet'      => implode("\n", $fields_get),
+            'fieldsData'     => implode(",\n", $fields_data),
+            'fieldsVal'      => implode(",\n", $fields_val),
+            'inputForm'      => implode("\n", $inputForm),
+            'editForm'       => implode("\n", $editForm),
+            'valueInput'     => implode("\n", $valueInput),
+            'modeluse'       => implode("\n", $modeluse),
+            'modelprotected' => implode("\n", $modelprotected),
+            'modelconstruct' => implode("\n", $modelconstruct),
+            'modeldatajoin'  => implode("\n", $modeldatajoin),
+            'modeljoin'      => $modeljoin,
         );
     }
 
-    protected function createFileCrud($data){
-		$pathModel          = $this->getPathOutput('Models',$data['namespace']).$data['nameModel'].'.php';
-		$pathController     = $this->getPathOutput('Controllers',$data['namespace']).$data['nameController'].'.php';
-		$pathViewadd        = $this->getPathOutput('Views',$data['namespace']).$data['table'].'/add.php';
-		$pathViewedit       = $this->getPathOutput('Views',$data['namespace']).$data['table'].'/edit.php';
-		$pathViewindex      = $this->getPathOutput('Views',$data['namespace']).$data['table'].'/index.php';
+    protected function createFileCrud($data)
+    {
+        $pathModel          = $this->getPathOutput('Models', $data['namespace']) . $data['nameModel'] . '.php';
+        $pathController     = $this->getPathOutput('Controllers', $data['namespace']) . $data['nameController'] . '.php';
+        $pathViewadd        = $this->getPathOutput('Views', $data['namespace']) . $data['table'] . '/add.php';
+        $pathViewedit       = $this->getPathOutput('Views', $data['namespace']) . $data['table'] . '/edit.php';
+        $pathViewindex      = $this->getPathOutput('Views', $data['namespace']) . $data['table'] . '/index.php';
 
-		$this->copyFile($pathModel,$this->render('Model',$data));
-		$this->copyFile($pathController,$this->render('Controller',$data));
-		$this->copyFile($pathViewadd,$this->render('views/add',$data));
-		$this->copyFile($pathViewedit,$this->render('views/edit',$data));
-		$this->copyFile($pathViewindex,$this->render('views/index',$data));
+        $this->copyFile($pathModel, $this->render('Model', $data));
+        $this->copyFile($pathController, $this->render('Controller', $data));
+        $this->copyFile($pathViewadd, $this->render('views/add', $data));
+        $this->copyFile($pathViewedit, $this->render('views/edit', $data));
+        $this->copyFile($pathViewindex, $this->render('views/index', $data));
 
-		$this->createRoute($data);
+        $this->createRoute($data);
     }
 
     /**
      * Convert the type field sql to type input html
      */
-    public function getTypeInput($type_sql){
+    public function getTypeInput($type_sql)
+    {
         $type_html = "";
-        switch ($type_sql){
+        switch ($type_sql) {
             case 'int':
                 $type_html = 'number';
                 break;
             case 'varchar':
                 $type_html = 'text';
                 break;
-			case 'date':
+            case 'date':
                 $type_html = 'date';
-                break; 
-			case 'datetime':
+                break;
+            case 'datetime':
                 $type_html = 'datetime';
                 break;
-			case 'timestamp':
+            case 'timestamp':
                 $type_html = 'datetime';
-                break;	
-			case 'time':
+                break;
+            case 'time':
                 $type_html = 'time';
                 break;
             case 'text':
@@ -224,60 +293,59 @@ trait Generate
 
     public function createRoute($data)
     {
-            $routeFile = APPPATH.'Config/Routes.php';
-            $routeFileContents = file_get_contents($routeFile);
-            //$routeFileItemHook = '$routes->group('. '\''.$data['routegroup']. '\'' . ', [\'filter\' => \'auth\'], function($routes){';
-            $routeFileItemHook = '$routes->get(\'/\', \'Home::index\')';
+        $routeFile = APPPATH . 'Config/Routes.php';
+        $routeFileContents = file_get_contents($routeFile);
+        //$routeFileItemHook = '$routes->group('. '\''.$data['routegroup']. '\'' . ', [\'filter\' => \'auth\'], function($routes){';
+        $routeFileItemHook = '$routes->get(\'/\', \'Home::index\')';
 
-            $data_to_write ="\t//". humanize($data['table']) ." Routes\n\t";
-            $data_to_write.='$routes->get(\''.$data['table'].'\',\''.$data['nameController'].'::index\');'."\n\t";
-            $data_to_write.='$routes->get(\''.$data['table'].'/add\',\''.$data['nameController'].'::add\');'."\n\t"; 
-            $data_to_write.='$routes->post(\''.$data['table'].'/save\',\''.$data['nameController'].'::save\');'."\n\t";
-            $data_to_write.='$routes->get(\''.$data['table'].'/edit/(:any)\',\''.$data['nameController'].'::edit/$1\');'."\n\t";
-            $data_to_write.='$routes->post(\''.$data['table'].'/update\',\''.$data['nameController'].'::update\');'."\n\t";
-            $data_to_write.='$routes->get(\''.$data['table'].'/delete/(:any)\',\''.$data['nameController'].'::delete/$1\');';
+        $data_to_write = "\t//" . humanize($data['table']) . " Routes\n\t";
+        $data_to_write .= '$routes->get(\'' . $data['table'] . '\',\'' . $data['nameController'] . '::index\');' . "\n\t";
+        $data_to_write .= '$routes->get(\'' . $data['table'] . '/add\',\'' . $data['nameController'] . '::add\');' . "\n\t";
+        $data_to_write .= '$routes->post(\'' . $data['table'] . '/save\',\'' . $data['nameController'] . '::save\');' . "\n\t";
+        $data_to_write .= '$routes->get(\'' . $data['table'] . '/edit/(:any)\',\'' . $data['nameController'] . '::edit/$1\');' . "\n\t";
+        $data_to_write .= '$routes->post(\'' . $data['table'] . '/update\',\'' . $data['nameController'] . '::update\');' . "\n\t";
+        $data_to_write .= '$routes->get(\'' . $data['table'] . '/delete/(:any)\',\'' . $data['nameController'] . '::delete/$1\');';
 
+        //var_dump($data_to_write);
+        if (!strpos($routeFileContents, $data_to_write)) {
+            $newContents = str_replace($routeFileItemHook, $routeFileItemHook . ';' . PHP_EOL . $data_to_write, $routeFileContents);
             //var_dump($data_to_write);
-            if (!strpos($routeFileContents, $data_to_write)) {
-                $newContents = str_replace($routeFileItemHook, $routeFileItemHook.';' . PHP_EOL . $data_to_write, $routeFileContents);
-                //var_dump($data_to_write);
-                file_put_contents($routeFile, $newContents);
-            } 
+            file_put_contents($routeFile, $newContents);
+        }
     }
 
-  //   public function createRoute($data)
-  //   {
-  //       $route_file = APPPATH.'Config/Routes.php';
-  //       $string = file_get_contents($route_file);
+    //   public function createRoute($data)
+    //   {
+    //       $route_file = APPPATH.'Config/Routes.php';
+    //       $string = file_get_contents($route_file);
 
-  //       $data_to_write ="\n//". humanize($data['table']) ." Routes\n";
-  //       $data_to_write.='$routes->get(\''.$data['table'].'\',\''.$data['nameController'].'::index\');'."\n";
-		// $data_to_write.='$routes->get(\''.$data['table'].'/add\',\''.$data['nameController'].'::add\');'."\n"; 
-		// $data_to_write.='$routes->post(\''.$data['table'].'/save\',\''.$data['nameController'].'::save\');'."\n";
-  //       $data_to_write.='$routes->get(\''.$data['table'].'/edit/(:any)\',\''.$data['nameController'].'::edit/$1\');'."\n";
-  //       $data_to_write.='$routes->post(\''.$data['table'].'/update\',\''.$data['nameController'].'::update\');'."\n";
-		// $data_to_write.='$routes->get(\''.$data['table'].'/delete/(:any)\',\''.$data['nameController'].'::delete/$1\');';
+    //       $data_to_write ="\n//". humanize($data['table']) ." Routes\n";
+    //       $data_to_write.='$routes->get(\''.$data['table'].'\',\''.$data['nameController'].'::index\');'."\n";
+    // $data_to_write.='$routes->get(\''.$data['table'].'/add\',\''.$data['nameController'].'::add\');'."\n"; 
+    // $data_to_write.='$routes->post(\''.$data['table'].'/save\',\''.$data['nameController'].'::save\');'."\n";
+    //       $data_to_write.='$routes->get(\''.$data['table'].'/edit/(:any)\',\''.$data['nameController'].'::edit/$1\');'."\n";
+    //       $data_to_write.='$routes->post(\''.$data['table'].'/update\',\''.$data['nameController'].'::update\');'."\n";
+    // $data_to_write.='$routes->get(\''.$data['table'].'/delete/(:any)\',\''.$data['nameController'].'::delete/$1\');';
 
-  //           if (!strpos($string, $data_to_write)) {
-  //               file_put_contents($route_file, $data_to_write, FILE_APPEND);
-  //           }
-  //   }
+    //           if (!strpos($string, $data_to_write)) {
+    //               file_put_contents($route_file, $data_to_write, FILE_APPEND);
+    //           }
+    //   }
 
     public function createDirectory($path, $perms = 0755)
     {
-        if (is_dir($path))
-        {
+        if (is_dir($path)) {
             return $this;
         }
 
-        if (! mkdir($path, $perms, true))
-        {
+        if (!mkdir($path, $perms, true)) {
             throw new \RuntimeException(sprintf('Error creating directory', $path));
         }
         return $this;
     }
 
-    public function getDirOfFile($file){
+    public function getDirOfFile($file)
+    {
         $segments = explode('/', $file);
         array_pop($segments);
         return $folder = implode('/', $segments);

@@ -11,18 +11,18 @@ class {! nameModel !} extends Model
 	protected $useAutoIncrement     = true;
 	protected $insertID             = 0;
 	protected $returnType           = 'array';
-	protected $useSoftDelete        = false;
+	protected $useSoftDeletes       = true;
 	protected $protectFields        = true;
 	protected $allowedFields        = [
 	{! allowedFields !}
-	];
+							];
 
 	// Dates
-	protected $useTimestamps        = false;
+	protected $useTimestamps        = true;
 	protected $dateFormat           = 'datetime';
-	protected $createdField         = 'created_at';
-	protected $updatedField         = 'updated_at';
-	protected $deletedField         = 'deleted_at';
+	protected $createdField         = '{! pk_string !}_created_at';
+	protected $updatedField         = '{! pk_string !}_updated_at';
+	protected $deletedField         = '{! pk_string !}_deleted_at';
 
 	// Validation
 	protected $validationRules      = [
@@ -42,4 +42,6 @@ class {! nameModel !} extends Model
 	protected $afterFind            = [];
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
+
+{! modeljoin !}
 }

@@ -4,16 +4,19 @@ namespace {namespace}\Controllers;
 use CodeIgniter\Controller;
 use App\Models\{! nameModel !};
 
-class {! nameController !} extends BaseController
+{! modeluse !}
+
+class {! nameController !} extends Controller
 {
     protected ${! singularTable !};
-
+{! modelprotected !}
     /**
      * {! nameController !} constructor.
      */
     public function __construct()
     {
         $this->{! singularTable !} = new {! nameModel !}();
+{! modelconstruct !}
         //if (session()->get('role') != "{! routegroup !}") {
         //    echo 'Access denied';
         //    exit;
@@ -30,31 +33,36 @@ class {! nameController !} extends BaseController
 
     public function add()
     {
-        return view('{! table !}/add');
+        $data = array();
+{! modeldatajoin !}
+        
+        return view('{! table !}/add', $data);
     }
 
     public function save()
     {
+{! modeldatajoin !}
+
 {! fieldsGet !}
 
-        $data = [
+        $insert_data = [
 {! fieldsData !}
         ];
-        if ($this->{! singularTable !}->save($data) == false) {
-            return view('{! table !}/add', [
-                'errors' => $this->{! singularTable !}->errors()
-            ]);
+        if ($this->{! singularTable !}->save($insert_data) == false) {
+            $data['errors'] = $this->{! singularTable !}->errors();
+            return view('{! table !}/add', $data);
         } else {
-            return redirect('{! routegroup !}/{! table !}');
+            return redirect('{! table !}');
         }
     }
 
     public function edit($id)
     {
+{! modeldatajoin !}
+
         ${! singularTable !} = $this->{! singularTable !}->find($id);
-        return view('{! table !}/edit', [
-            'value' => ${! singularTable !}
-        ]);
+        $data['value'] = ${! singularTable !};
+        return view('{! table !}/edit', $data);
     }
 
     public function update()
@@ -62,16 +70,16 @@ class {! nameController !} extends BaseController
             $id = $this->request->getPost('{! primaryKey !}');
 {! fieldsGet !}
 
-        $data = [
+        $insert_data = [
 {! fieldsData !}
         ];
-        $this->{! singularTable !}->update($id, $data);
-        return redirect('{! routegroup !}/{! table !}');
+        $this->{! singularTable !}->update($id, $insert_data);
+        return redirect('{! table !}');
     }
 
     public function delete($id)
     {
         $this->{! singularTable !}->delete($id);
-        return redirect('{! routegroup !}/{! table !}');
+        return redirect('{! table !}');
     }
 }

@@ -33,35 +33,48 @@ class CreateCrud extends BaseCommand
            CLI::write('Cannot generate crud for '. CLI::color( $table , 'yellow') .' Table because it might interfere with your login Crud.', "red");
           exit;
         }
+        if (empty($namespace))
+        {
+            $namespace      = "App";
+        }
         $controllerName = pascalize($table) .'Controller';
         $modelName      = pascalize($table) .'Model';
-        $namespace      = "App";
-        var_dump($modelName);
+
+        $foreignkeys = $this->getForeignkey($table);
+        if (empty($foreignkeys)){$foreignkeys = false;}
+        
         if ($fields_db =  $this->getFields($table)){
             if (empty($routegroup)) {
                 $routegroup = CLI::prompt('Which Route group do you want to Use for the routes?', ['editor','admin'], 'min_length[3]'); 
             }
             $this->data = [
                 'table'             => $table,
-                'table_lc'             => strtolower(pascalize($table)),
+                'table_lc'          => strtolower($controllerName),
                 'primaryKey'        => $this->getPrimaryKey($fields_db),
+                'pk_string'         => substr($this->getPrimaryKey($fields_db), -4),
                 'namespace'         => $namespace,
                 'nameEntity'        => ucfirst($table),
                 'singularTable'     => singular($table),
                 'nameModel'         => ucfirst($modelName),
                 'nameController'    => ucfirst($controllerName),
                 'routegroup'        => $routegroup,
-                'allowedFields'     => $this->getDatesFromFields($fields_db)['allowedFields'],
-                'fieldsGet'         => $this->getDatesFromFields($fields_db)['fieldsGet'],
-                'fieldsData'        => $this->getDatesFromFields($fields_db)['fieldsData'],
-                'fieldsVal'         => $this->getDatesFromFields($fields_db)['fieldsVal'],
-                'fieldsTh'          => $this->getDatesFromFields($fields_db)['fieldsTh'],
-                'fieldsTd'          => $this->getDatesFromFields($fields_db)['fieldsTd'],
-                'inputForm'         => $this->getDatesFromFields($fields_db)['inputForm'],
-                'editForm'          => $this->getDatesFromFields($fields_db)['editForm'],
-                'valueInput'        => $this->getDatesFromFields($fields_db)['valueInput'],
+                'foreignkeys'       => $foreignkeys,
+                'allowedFields'     => $this->getDatesFromFields($fields_db, $foreignkeys)['allowedFields'],
+                'fieldsGet'         => $this->getDatesFromFields($fields_db, $foreignkeys)['fieldsGet'],
+                'fieldsData'        => $this->getDatesFromFields($fields_db, $foreignkeys)['fieldsData'],
+                'fieldsVal'         => $this->getDatesFromFields($fields_db, $foreignkeys)['fieldsVal'],
+                'fieldsTh'          => $this->getDatesFromFields($fields_db, $foreignkeys)['fieldsTh'],
+                'fieldsTd'          => $this->getDatesFromFields($fields_db, $foreignkeys)['fieldsTd'],
+                'inputForm'         => $this->getDatesFromFields($fields_db, $foreignkeys)['inputForm'],
+                'editForm'          => $this->getDatesFromFields($fields_db, $foreignkeys)['editForm'],
+                'valueInput'        => $this->getDatesFromFields($fields_db, $foreignkeys)['valueInput'],
+                'modeluse'          => $this->getDatesFromFields($fields_db, $foreignkeys)['modeluse'],
+                'modelprotected'    => $this->getDatesFromFields($fields_db, $foreignkeys)['modelprotected'],
+                'modelconstruct'    => $this->getDatesFromFields($fields_db, $foreignkeys)['modelconstruct'],
+                'modeldatajoin'     => $this->getDatesFromFields($fields_db, $foreignkeys)['modeldatajoin'],
+                'modeljoin'         => $this->getDatesFromFields($fields_db, $foreignkeys)['modeljoin'],
             ];
-
+            //var_dump($foreignkeys);
             $this->createFileCrud($this->data);
             CLI::write("Controller Generated successfully!", "cyan");
             CLI::write("Model Generated successfully!", "cyan");
