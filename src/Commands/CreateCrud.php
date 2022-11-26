@@ -17,13 +17,15 @@ class CreateCrud extends BaseCommand
     public function run(array $params)
     {
         helper('inflector');
-        $table          = array_shift($params);
-        $controllerName = array_shift($params);
-        $modelName      = array_shift($params);
-        $namespace      = array_shift($params);
-        $routegroup     = array_shift($params);
-        $single_rec     = array_shift($params);
-
+        if (    isset($params['table']) )           {   $table          =   $params['table'];   } 
+        if (    isset($params['controllerName']) )  {   $controllerName =   $params['controllerName'];   } 
+        if (    isset($params['modelName']) )       {   $modelName      =   $params['modelName'];   } 
+        if (    isset($params['namespace']) )       {   $namespace      =   $params['namespace'];   } 
+        if (    isset($params['routegroup']) )      {   $routegroup     =   $params['routegroup'];   } 
+        if (    isset($params['single_rec']) )      {   $single_rec     =   $params['single_rec'];   } 
+        CLI::write('Included files: ' . CLI::color(count(get_included_files()), 'yellow'));
+        
+        var_dump($table);
         if (empty($table))
         {
             $table      = CLI::prompt('Enter Table name');

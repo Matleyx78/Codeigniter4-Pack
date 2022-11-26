@@ -44,7 +44,7 @@
 				</table>
 				@php if (isset($pager)) : !php 
 					<div align="center">
-						@php $pagi_path = 'cmms_assets'; !php
+						@php $pagi_path = '{! table !}'; !php
 						@php $pager->setPath($pagi_path); !php
 						@= $pager->links() !php
 					</div>
