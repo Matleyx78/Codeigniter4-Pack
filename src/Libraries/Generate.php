@@ -261,13 +261,13 @@ trait Generate
         $pathViewedit       = $this->getPathOutput('Views', $data['namespace']) . $data['table'] . '/edit.php';
         $pathViewindex      = $this->getPathOutput('Views', $data['namespace']) . $data['table'] . '/index.php';
 
-        //$this->copyFile($pathModel, $this->render('Model', $data));
-        //$this->copyFile($pathController, $this->render('Controller', $data));
+        $this->copyFile($pathModel, $this->render('Model', $data));
+        $this->copyFile($pathController, $this->render('Controller', $data));
         $this->copyFile($pathViewadd, $this->render('views/add', $data));
         $this->copyFile($pathViewedit, $this->render('views/edit', $data));
-        //$this->copyFile($pathViewindex, $this->render('views/index', $data));
+        $this->copyFile($pathViewindex, $this->render('views/index', $data));
 
-        //$this->createRoute($data);
+        $this->createRoute($data);
     }
 
     /**
