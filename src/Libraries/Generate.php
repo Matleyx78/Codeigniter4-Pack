@@ -154,7 +154,7 @@ trait Generate
                         "\t\t\t\t\t\t\t" . '<div class="row clearfix">
                                 <div class="col-md-6"> <label class="form-label" for="' . $field->name . '">' . ucwords(str_replace('_', ' ', ($field->name))) . '</label>
                                     <div class="form-group">
-                                        <select name="' . $field->name . '" class="form-control">
+                                        <select name="' . $field->name . '" id="' . $field->name . '" class="form-control">
                                             <?php foreach($' . $foreignikeys[$field->name]['foreign_table_name'] . ' as $' . $foreignikeys[$field->name]['fk_last'] . '): ?>
                                                 <option value="<?php echo $' . $foreignikeys[$field->name]['fk_last'] . '[\'' . $foreignikeys[$field->name]['foreign_column_name'] . '\']; ?>" class="form-control" id="' . $field->name . '"><?php echo $' . $foreignikeys[$field->name]['fk_last'] . '[\'' . $foreignikeys[$field->name]['foreign_column_name'] . '\']; ?></option>
                                             <?php endforeach;?>
@@ -166,7 +166,7 @@ trait Generate
                         "\t\t\t\t\t\t\t" . '<div class="row clearfix">
                                 <div class="col-md-6"> <label class="form-label" for="' . $field->name . '">' . ucwords(str_replace('_', ' ', ($field->name))) . '</label>
                                     <div class="form-group">
-                                        <select name="' . $field->name . '" class="form-control">
+                                    <select name="' . $field->name . '" id="' . $field->name . '" class="form-control">
                                             <?php foreach($' . $foreignikeys[$field->name]['foreign_table_name'] . ' as $' . $foreignikeys[$field->name]['fk_last'] . '): ?>
                                                 <option value="<?php echo $' . $foreignikeys[$field->name]['fk_last'] . '[\'' . $foreignikeys[$field->name]['foreign_column_name'] . '\']; ?>" <?php if ($value[\'' . $field->name . '\'] == $' . $foreignikeys[$field->name]['fk_last'] . '[\'' . $foreignikeys[$field->name]['foreign_column_name'] . '\']) echo "selected=\"selected\"";?> class="form-control" id="' . $field->name . '"><?php echo $' . $foreignikeys[$field->name]['fk_last'] . '[\'' . $foreignikeys[$field->name]['foreign_column_name'] . '\']; ?></option>
                                             <?php endforeach;?>
