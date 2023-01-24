@@ -1,6 +1,6 @@
 <?php
 function string_purifier($string = '')
     {
-        $purified = preg_replace( '/[^a-z0-9]+/', '-', $string);
+        $purified = preg_replace( '/[a-zA-Z0-9_-]+/', '-', $string);
     return $purified;
     }
