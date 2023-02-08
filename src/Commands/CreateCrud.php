@@ -35,10 +35,15 @@ class CreateCrud extends BaseCommand
            CLI::write('Cannot generate crud for '. CLI::color( $table , 'yellow') .' Table because it might interfere with your login Crud.', "red");
           exit;
         }
+        
         if (empty($namespace))
         {
             $namespace      = "App";
+            $address_views  = $table;
+        }else{
+            $address_views  = $namespace . "\Views\\" . $table;
         }
+
         $controllerName = pascalize($table) .'Controller';
         $modelName      = pascalize($table) .'Model';
 
@@ -47,7 +52,7 @@ class CreateCrud extends BaseCommand
         
         if ($fields_db =  $this->getFields($table)){
             if (empty($routegroup)) {
-                $routegroup = CLI::prompt('Which Route group do you want to Use for the routes?', ['editor','admin'], 'min_length[3]'); 
+                $routegroup = CLI::prompt('Which Route group do you want to Use for the routes?', ['manteiners','admin'], 'min_length[3]'); 
             }
             $this->data = [
                 'table'             => $table,
@@ -61,20 +66,21 @@ class CreateCrud extends BaseCommand
                 'nameController'    => ucfirst($controllerName),
                 'routegroup'        => $routegroup,
                 'foreignkeys'       => $foreignkeys,
-                'allowedFields'     => $this->getDatesFromFields($fields_db, $foreignkeys)['allowedFields'],
-                'fieldsGet'         => $this->getDatesFromFields($fields_db, $foreignkeys)['fieldsGet'],
-                'fieldsData'        => $this->getDatesFromFields($fields_db, $foreignkeys)['fieldsData'],
-                'fieldsVal'         => $this->getDatesFromFields($fields_db, $foreignkeys)['fieldsVal'],
-                'fieldsTh'          => $this->getDatesFromFields($fields_db, $foreignkeys)['fieldsTh'],
-                'fieldsTd'          => $this->getDatesFromFields($fields_db, $foreignkeys)['fieldsTd'],
-                'inputForm'         => $this->getDatesFromFields($fields_db, $foreignkeys)['inputForm'],
-                'editForm'          => $this->getDatesFromFields($fields_db, $foreignkeys)['editForm'],
-                'valueInput'        => $this->getDatesFromFields($fields_db, $foreignkeys)['valueInput'],
-                'modeluse'          => $this->getDatesFromFields($fields_db, $foreignkeys)['modeluse'],
-                'modelprotected'    => $this->getDatesFromFields($fields_db, $foreignkeys)['modelprotected'],
-                'modelconstruct'    => $this->getDatesFromFields($fields_db, $foreignkeys)['modelconstruct'],
-                'modeldatajoin'     => $this->getDatesFromFields($fields_db, $foreignkeys)['modeldatajoin'],
-                'modeljoin'         => $this->getDatesFromFields($fields_db, $foreignkeys)['modeljoin'],
+                'address_views'     => $address_views,
+                'allowedFields'     => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['allowedFields'],
+                'fieldsGet'         => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['fieldsGet'],
+                'fieldsData'        => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['fieldsData'],
+                'fieldsVal'         => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['fieldsVal'],
+                'fieldsTh'          => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['fieldsTh'],
+                'fieldsTd'          => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['fieldsTd'],
+                'inputForm'         => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['inputForm'],
+                'editForm'          => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['editForm'],
+                'valueInput'        => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['valueInput'],
+                'modeluse'          => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['modeluse'],
+                'modelprotected'    => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['modelprotected'],
+                'modelconstruct'    => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['modelconstruct'],
+                'modeldatajoin'     => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['modeldatajoin'],
+                'modeljoin'         => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['modeljoin'],
             ];
             //var_dump($foreignkeys);
             $this->createFileCrud($this->data);

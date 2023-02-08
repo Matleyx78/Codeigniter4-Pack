@@ -16,7 +16,7 @@
 	                            @php endforeach; !php
 	                        @php endif; !php
 						</div>
-		                <form class="row g-2" role="form" action="@= site_url('/{! table !}/save') !php" method="post">
+		                <form role="form" action="@= site_url('/{! table !}/save') !php" method="post">
 {! inputForm !}
 					<div class="form-group">
                             <button type="submit" class="btn btn-success">

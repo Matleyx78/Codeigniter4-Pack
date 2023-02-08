@@ -137,3 +137,16 @@ function now_to_datetime()
 
     return $now;
     }
+    
+    function data_maintrack($datestr)    //YYYY-MM-DD HH:MM:SS
+    {
+        $gg    = substr($datestr, 8, 2); //   2016-08-31 00:00:00
+        $mm    = substr($datestr, 5, 2);
+        $yyyy  = substr($datestr, 0, 4);
+        $hh    = substr($datestr, -8, 2);
+        $ii    = substr($datestr, -5, 2);
+        $ss    = substr($datestr, -2, 2);
+        $uman2 = "$yyyy$mm$gg$hh$ii$ss";
+    
+        return $uman2;
+    }

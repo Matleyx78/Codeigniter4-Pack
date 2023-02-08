@@ -2,7 +2,7 @@
 namespace {namespace}\Controllers;
 
 use CodeIgniter\Controller;
-use App\Models\{! nameModel !};
+use {namespace}\Models\{! nameModel !};
 
 {! modeluse !}
 
@@ -15,6 +15,11 @@ class {! nameController !} extends Controller
      */
     public function __construct()
     {
+        $user = auth()->user();
+        if (! $user->inGroup('{! routegroup !}')) {
+            echo 'Access denied';
+            exit;
+        }
         $this->{! singularTable !} = new {! nameModel !}();
 {! modelconstruct !}
         //if (session()->get('role') != "{! routegroup !}") {
@@ -26,7 +31,7 @@ class {! nameController !} extends Controller
     public function index()
     {
         ${! table !} = $this->{! singularTable !}->findAll();
-        return view('{! table !}/index', [
+        return view('{! address_views !}/index', [
             '{! table !}' => ${! table !}
         ]);
     }
@@ -36,7 +41,7 @@ class {! nameController !} extends Controller
         $data = array();
 {! modeldatajoin !}
         
-        return view('{! table !}/add', $data);
+        return view('{! address_views !}/add', $data);
     }
 
     public function save()
@@ -50,7 +55,7 @@ class {! nameController !} extends Controller
         ];
         if ($this->{! singularTable !}->save($insert_data) == false) {
             $data['errors'] = $this->{! singularTable !}->errors();
-            return view('{! table !}/add', $data);
+            return view('{! address_views !}/add', $data);
         } else {
             return redirect('{! table !}');
         }
@@ -62,7 +67,7 @@ class {! nameController !} extends Controller
 
         ${! singularTable !} = $this->{! singularTable !}->find($id);
         $data['value'] = ${! singularTable !};
-        return view('{! table !}/edit', $data);
+        return view('{! address_views !}/edit', $data);
     }
 
     public function update()

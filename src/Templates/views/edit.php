@@ -9,7 +9,7 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-md-12">
-						<form class="row g-2" role="form" action="@= site_url('/{! table !}/update') !php" method="post" enctype="multipart/form-data">
+						<form role="form" action="@= site_url('/{! table !}/update') !php" method="post" enctype="multipart/form-data">
 		                    <input type="hidden" name="{! primaryKey !}" value="@= $value['{! primaryKey !}'] !php">
 {! editForm !}
 							<div class="form-group">

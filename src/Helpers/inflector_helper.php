@@ -20,9 +20,37 @@ function string_purifier($string = '')
     $string = str_replace('ñ', 'n', $string);
     $string = str_replace('Ñ', 'N', $string);
 
+    $string = str_replace('/', '-', $string);
     $string_trim = trim($string);
-    $multispace = preg_replace('/\s+/', ' ', $string_trim);   //multispce
+    $multispace = preg_replace('/\s+/',' ',$string_trim);  //multispce
     $under = str_replace(' ', '_', $multispace);
-    $purified = preg_replace('/[a-zA-Z0-9_-]+/', '-', $under);
+    $purified = preg_replace('/[^0-9a-zA-Z_-]/', '', $under);
     return $purified;
+}
+
+function string_generator($lenght = '')
+{
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $randomString = ''; 
+    for ($i = 0; $i < $lenght; $i++) {
+        $index = rand(0, strlen($characters) - 1);
+        $randomString .= $characters[$index];
+    }
+ 
+    return $randomString;
+}
+
+function code_and_desc($string)
+{
+    $esplosi = explode(' ', $string);
+    $final_code = '';
+    foreach ($esplosi as $es)
+    {
+        $str = substr($es, 0, 2);
+        $final_code .= $str;
+    }
+    $dati['c'] = string_purifier($final_code).string_generator(3);
+    $dati['d'] = string_purifier($string);
+
+    return $dati;
 }
