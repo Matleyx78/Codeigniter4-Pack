@@ -13,6 +13,8 @@
         {
             $arr_ord[] = $o;
         }
+        $result['max'] = max($lista);
+        $result['min'] = min($lista);
         // MEDIA
         $res_media = 0;
         foreach ($lista as $n)
