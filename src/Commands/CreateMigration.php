@@ -3,15 +3,15 @@ namespace Matleyx\CI4P\Commands;
 
 use CodeIgniter\CLI\CLI;
 use CodeIgniter\CLI\BaseCommand;
-use Matleyx\CI4P\Libraries\GenerateCrud;
+use Matleyx\CI4P\Libraries\GenerateMigration;
 
-class CreateCrud extends BaseCommand
+class CreateMigration extends BaseCommand
 {
     //  php spark make:crud --table 'NAMETABLE' --namespace 'NAMESPACE'
     use Generate;
     protected $group       = 'Generators';
-    protected $name        = 'make:crud';
-    protected $description = 'Generate CRUD based on model, (External Library)';
+    protected $name        = 'make:migration';
+    protected $description = 'Generate migration file from an existing database/table';
     protected $data        = [];
 
 
@@ -19,14 +19,10 @@ class CreateCrud extends BaseCommand
     {
         helper('inflector');
         if (    isset($params['table']) )           {   $table          =   $params['table'];   } 
-        if (    isset($params['controllerName']) )  {   $controllerName =   $params['controllerName'];   } 
-        if (    isset($params['modelName']) )       {   $modelName      =   $params['modelName'];   } 
-        if (    isset($params['namespace']) )       {   $namespace      =   $params['namespace'];   } 
-        if (    isset($params['routegroup']) )      {   $routegroup     =   $params['routegroup'];   } 
-        if (    isset($params['single_rec']) )      {   $single_rec     =   $params['single_rec'];   } 
+        if (    isset($params['database']) )        {   $database       =   $params['database'];   } 
         CLI::write('Included files: ' . CLI::color(count(get_included_files()), 'yellow'));
         
-        var_dump($table);
+        //var_dump($table);
         if (empty($table))
         {
             $table      = CLI::prompt('Enter Table name');
@@ -36,20 +32,10 @@ class CreateCrud extends BaseCommand
            CLI::write('Cannot generate crud for '. CLI::color( $table , 'yellow') .' Table because it might interfere with your login Crud.', "red");
           exit;
         }
-        
-        if (empty($namespace))
+        if (empty($database))
         {
-            $namespace      = "App";
-            $address_views  = $table;
-        }else{
-            $address_views  = $namespace . "\Views\\" . $table;
+            $database      = CLI::prompt('Enter database name');
         }
-
-        $controllerName = pascalize($table) .'Controller';
-        $modelName      = pascalize($table) .'Model';
-
-        $foreignkeys = $this->getForeignkey($table);
-        if (empty($foreignkeys)){$foreignkeys = false;}
         
         if ($fields_db =  $this->getFields($table)){
             if (empty($routegroup)) {
