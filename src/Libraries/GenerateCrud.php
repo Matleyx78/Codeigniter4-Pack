@@ -5,7 +5,7 @@ namespace Matleyx\CI4P\Libraries;
 use Config\Autoload;
 use Config\Services;
 
-trait Generate
+trait GenerateCrud
 {
 
     protected function getPathOutput($folder = '', $namespace = 'App')
