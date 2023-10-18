@@ -1,11 +1,11 @@
 <?php
-// php spark make:crud --table 'cmms_activity' --namespace 'Matleyx\CI4CMMS'
+// php spark make:migfromtable --table 'cmms_activity' --namespace 'Matleyx\CI4CMMS'
 namespace Matleyx\CI4P\Libraries;
 
 use Config\Autoload;
 use Config\Services;
 
-trait GenerateMigration
+trait GenerateMigFromTable
 {
 
     protected function getPathOutput($folder = '', $namespace = 'App')

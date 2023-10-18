@@ -3,14 +3,14 @@ namespace Matleyx\CI4P\Commands;
 
 use CodeIgniter\CLI\CLI;
 use CodeIgniter\CLI\BaseCommand;
-use Matleyx\CI4P\Libraries\GenerateMigration;
+use Matleyx\CI4P\Libraries\GenerateMigFromTable;
 
-class CreateMigration extends BaseCommand
+class CreateMigFromTable extends BaseCommand
 {
     //  php spark make:crud --table 'NAMETABLE' --namespace 'NAMESPACE'
     use Generate;
     protected $group       = 'Generators';
-    protected $name        = 'make:migration';
+    protected $name        = 'make:migfromtable';
     protected $description = 'Generate migration file from an existing database/table';
     protected $data        = [];
 
