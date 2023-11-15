@@ -2,6 +2,7 @@
 # link: https://learn.microsoft.com/it-it/sql/connect/php/installation-tutorial-linux-mac?view=sql-server-ver16#installing-on-debian
 # link: https://learn.microsoft.com/it-it/sql/connect/odbc/linux-mac/installing-the-microsoft-odbc-driver-for-sql-server?view=sql-server-ver16&tabs=debian18-install%2Cdebian17-install%2Cdebian8-install%2Credhat7-13-install%2Crhel7-offline
 # link: https://learn.microsoft.com/it-it/sql/connect/php/connection-options?view=sql-server-ver16
+# link: https://itslinuxfoss.com/install-samba-debian-12/
 
 sudo apt-get install apache2-utils apache2
 sudo  systemctl restart apache2
