@@ -4,6 +4,8 @@
 # link: https://learn.microsoft.com/it-it/sql/connect/php/connection-options?view=sql-server-ver16
 # link: https://itslinuxfoss.com/install-samba-debian-12/
 
+sudo apt install locate curl
+
 sudo apt-get install apache2-utils apache2
 sudo  systemctl restart apache2
 sudo systemctl enable apache2
