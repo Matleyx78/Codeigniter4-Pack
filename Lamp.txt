@@ -1,0 +1,45 @@
+sudo apt-get install apache2-utils apache2
+sudo  systemctl restart apache2
+sudo systemctl enable apache2
+sudo apt-get install mariadb-server
+sudo systemctl start mariadb
+sudo systemctl enable mariadb
+sudo mariadb-secure-installation
+mysql -u root -p
+
+sudo apt-get install php libapache2-mod-php php-cli php-fpm php-json php-pdo php-mysql php-zip php-gd php-mbstring php-curl php-xml php-pear php-bcmath php-dev php-intl
+
+#	Microsoft ODBC 18	INIZIO
+# NON FUNZIONA curl https://packages.microsoft.com/keys/microsoft.asc | sudo tee /etc/apt/trusted.gpg.d/microsoft.asc
+curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | sudo gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg
+curl https://packages.microsoft.com/config/debian/12/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list
+sudo apt-get update
+sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
+# optional: for bcp and sqlcmd
+sudo ACCEPT_EULA=Y apt-get install -y mssql-tools18
+echo 'export PATH="$PATH:/opt/mssql-tools18/bin"' >> ~/.bashrc
+source ~/.bashrc
+# optional: for unixODBC development headers
+sudo apt-get install -y unixodbc-dev
+# optional: kerberos library for debian-slim distributions
+sudo apt-get install -y libgssapi-krb5-2
+sudo apt-get install unixodbc-dev
+#	Microsoft ODBC 18	FINE
+
+#	Microsoft driver sqlsrv	INIZIO
+pear config-set php_ini /etc/php/8.2/apache2/php.ini
+sudo pecl install sqlsrv
+sudo pecl install pdo_sqlsrv
+sudo su
+printf "; priority=20\nextension=sqlsrv.so\n" > /etc/php/8.2/mods-available/sqlsrv.ini
+printf "; priority=30\nextension=pdo_sqlsrv.so\n" > /etc/php/8.2/mods-available/pdo_sqlsrv.ini
+exit
+sudo phpenmod -v 8.2 sqlsrv pdo_sqlsrv
+sudo su
+a2dismod mpm_event
+a2enmod mpm_prefork
+a2enmod php8.2
+sudo service apache2 restart
+#	Microsoft driver sqlsrv	FINE
+
+sudo apt-get install phpmyadmin
