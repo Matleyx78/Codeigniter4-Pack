@@ -49,3 +49,21 @@ sudo service apache2 restart
 #	Microsoft driver sqlsrv	FINE
 
 sudo apt-get install phpmyadmin
+
+#  FOR ERROR IN SSL CONNECTION
+Edit openssl.conf file:
+sudo nano /etc/ssl/openssl.cnf
+
+Add this line at the top:
+openssl_conf = openssl_init
+
+And add these lines at the end:
+[openssl_init]
+ssl_conf = ssl_sect
+
+[ssl_sect]
+system_default = system_default_sect
+
+[system_default_sect]
+CipherString = DEFAULT@SECLEVEL=0
+#  FINE ERRORE SSL
