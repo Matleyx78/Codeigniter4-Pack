@@ -4,9 +4,20 @@ namespace Matleyx\CI4P\Libraries;
 
 use Config\Autoload;
 use Config\Services;
+use CodeIgniter\Model;
 
 trait GenerateMigFromTable
 {
+    protected function getTableData($table = '', $database = '')
+    {
+        $this->db = \Config\Database::connect($database);
+        if ($this->db->tableExists($table)) {
+            return  $fields = $this->db->getFieldData($table);
+        } else {
+            return false;
+        }
+    }
+
 
     protected function getPathOutput($folder = '', $namespace = 'App')
     {

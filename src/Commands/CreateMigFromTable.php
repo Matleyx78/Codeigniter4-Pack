@@ -7,7 +7,7 @@ use Matleyx\CI4P\Libraries\GenerateMigFromTable;
 
 class CreateMigFromTable extends BaseCommand
 {
-    //  php spark make:crud --table 'NAMETABLE' --namespace 'NAMESPACE'
+    //  php spark make:migfromtable --table 'NAMETABLE' --database 'database'
     use Generate;
     protected $group       = 'Generators';
     protected $name        = 'make:migfromtable';
