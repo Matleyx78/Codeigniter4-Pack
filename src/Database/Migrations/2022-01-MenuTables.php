@@ -6,7 +6,7 @@ namespace Matleyx\CI4P\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class CreateMenuTables extends Migration
+class MenuTables extends Migration
 {
     private $prefix_table = 'menu_';
     private $tab_item = array('tname' => 'items', 'pr' => 'meit', );
