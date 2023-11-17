@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Matleyx\CI4P\Controllers;
+namespace Matleyx\CI4P\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
