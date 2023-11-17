@@ -8,7 +8,7 @@ use Matleyx\CI4P\Libraries\GenerateCrud;
 class CreateCrud extends BaseCommand
 {
     //  php spark make:crud --table 'NAMETABLE' --namespace 'NAMESPACE'
-    use Generate;
+    use GenerateCrud;
     protected $group       = 'Generators';
     protected $name        = 'make:crud';
     protected $description = 'Generate CRUD based on model, (External Library)';
