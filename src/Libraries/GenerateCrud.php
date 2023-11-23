@@ -94,9 +94,9 @@ trait GenerateCrud
         return $output;
     }
 
-    protected function getFields($table)
+    protected function getFields($table,$db_sel)
     {
-        $this->db = \Config\Database::connect();
+        $this->db = \Config\Database::connect($db_sel);
         if ($this->db->tableExists($table)) {
             return  $fields = $this->db->getFieldData($table);
         } else {
@@ -104,9 +104,9 @@ trait GenerateCrud
         }
     }
 
-    protected function getForeignkey($table)
+    protected function getForeignkey($table,$db_sel)
     {
-        $this->db = \Config\Database::connect();
+        $this->db = \Config\Database::connect($db_sel);
         if ($this->db->tableExists($table)) {
             $fk_found = json_decode(json_encode($this->db->getForeignKeyData($table)), true);
             if ($fk_found) {
@@ -127,9 +127,13 @@ trait GenerateCrud
     }
     protected function getPrimaryKey($fields)
     {
-        foreach ($fields as $field) {
-            if ($field->primary_key) {
+        foreach ($fields as &$field) {
+            // var_dump($field);
+            // sleep(20);
+            if (isset($field->primary_key) AND $field->primary_key) {
                 return $field->name;
+}else{
+                $field->primary_key = false;
             }
         }
     }

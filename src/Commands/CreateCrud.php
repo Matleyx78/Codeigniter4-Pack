@@ -7,7 +7,7 @@ use Matleyx\CI4P\Libraries\GenerateCrud;
 
 class CreateCrud extends BaseCommand
 {
-    //  php spark make:crud --table 'NAMETABLE' --namespace 'NAMESPACE'
+    //  php spark make:crud --table 'NAMETABLE' --namespace 'NAMESPACE' --database 'database'
     use GenerateCrud;
     protected $group       = 'Generators';
     protected $name        = 'make:crud';
@@ -22,6 +22,7 @@ class CreateCrud extends BaseCommand
         if (    isset($params['controllerName']) )  {   $controllerName =   $params['controllerName'];   } 
         if (    isset($params['modelName']) )       {   $modelName      =   $params['modelName'];   } 
         if (    isset($params['namespace']) )       {   $namespace      =   $params['namespace'];   } 
+if (    isset($params['database']) )        {   $database       =   $params['database'];   } 
         if (    isset($params['routegroup']) )      {   $routegroup     =   $params['routegroup'];   } 
         if (    isset($params['single_rec']) )      {   $single_rec     =   $params['single_rec'];   } 
         CLI::write('Included files: ' . CLI::color(count(get_included_files()), 'yellow'));
@@ -36,22 +37,28 @@ class CreateCrud extends BaseCommand
            CLI::write('Cannot generate crud for '. CLI::color( $table , 'yellow') .' Table because it might interfere with your login Crud.', "red");
           exit;
         }
+$table_pascalized = pascalize(strtolower($table));
+        $controllerName = pascalize($table_pascalized ) .'Controller';
+        $modelName      = pascalize($table_pascalized ) .'Model';
         
         if (empty($namespace))
         {
             $namespace      = "App";
             $address_views  = $table;
         }else{
-            $address_views  = $namespace . "\Views\\" . $table;
+            $address_views  = $namespace . "\Views\\" . $table_pascalized;
         }
 
-        $controllerName = pascalize($table) .'Controller';
-        $modelName      = pascalize($table) .'Model';
+        if (empty($database))
+        {
+            $database      = CLI::prompt('Enter database name');
+        }
+        $db_sel = $database;
 
-        $foreignkeys = $this->getForeignkey($table);
+        $foreignkeys = $this->getForeignkey($table, $db_sel);
         if (empty($foreignkeys)){$foreignkeys = false;}
         
-        if ($fields_db =  $this->getFields($table)){
+        if ($fields_db =  $this->getFields($table, $db_sel)){
             if (empty($routegroup)) {
                 $routegroup = CLI::prompt('Which Route group do you want to Use for the routes?', ['manteiners','admin'], 'min_length[3]'); 
             }
