@@ -1,6 +1,6 @@
 <?php
 
-    public function mod_med_med($lista = array())
+    function mod_med_med($lista = array())
     {
         if (!isset($lista) or count($lista) == 0)
         {
