@@ -8,7 +8,17 @@ use CodeIgniter\Model;
 
 trait GenerateMigFromTable
 {
-    
+    protected function getTableData($table = '', $database = '')
+    {
+        $this->db = \Config\Database::connect($database);
+        if ($this->db->tableExists($table)) {
+            return  $fields = $this->db->getFieldData($table);
+        } else {
+            return false;
+        }
+    }
+
+
     protected function getPathOutput($folder = '', $namespace = 'App')
     {
         // Get namespace location form  PSR4 paths.
@@ -95,9 +105,9 @@ trait GenerateMigFromTable
         return $output;
     }
 
-    protected function getFields($table, $db)
+    protected function getFields($table)
     {
-        $this->db = \Config\Database::connect($db);
+        $this->db = \Config\Database::connect();
         if ($this->db->tableExists($table)) {
             return  $fields = $this->db->getFieldData($table);
         } else {
@@ -255,13 +265,21 @@ trait GenerateMigFromTable
         );
     }
 
-    protected function createFileMigration($data)
+    protected function createFileCrud($data)
     {
-        $pathMigration          = $this->getPathOutput('Migration', $data['namespace']) . $data['nameMigration'] . '.php';
+        $pathModel          = $this->getPathOutput('Models', $data['namespace']) . $data['nameModel'] . '.php';
+        $pathController     = $this->getPathOutput('Controllers', $data['namespace']) . $data['nameController'] . '.php';
+        $pathViewadd        = $this->getPathOutput('Views', $data['namespace']) . $data['table'] . '/add.php';
+        $pathViewedit       = $this->getPathOutput('Views', $data['namespace']) . $data['table'] . '/edit.php';
+        $pathViewindex      = $this->getPathOutput('Views', $data['namespace']) . $data['table'] . '/index.php';
 
-        $this->copyFile($pathMigration, $this->render('Migration', $data));
+        $this->copyFile($pathModel, $this->render('Model', $data));
+        $this->copyFile($pathController, $this->render('Controller', $data));
+        $this->copyFile($pathViewadd, $this->render('views/add', $data));
+        $this->copyFile($pathViewedit, $this->render('views/edit', $data));
+        $this->copyFile($pathViewindex, $this->render('views/index', $data));
 
-        
+        $this->createRoute($data);
     }
 
     /**
@@ -296,7 +314,47 @@ trait GenerateMigFromTable
         return $type_html;
     }
 
-    
+    public function createRoute($data)
+    {
+        $routeFile = APPPATH . 'Config/Routes.php';
+        $routeFileContents = file_get_contents($routeFile);
+        //$routeFileItemHook = '$routes->group('. '\''.$data['routegroup']. '\'' . ', [\'filter\' => \'auth\'], function($routes){';
+        $routeFileItemHook = '$routes->get(\'/\', \'Home::index\')';
+
+        $data_to_write = "\t//" . humanize($data['table']) . " Routes\n\t";
+        $data_to_write .= '$routes->get(\'' . $data['table'] . '\',\'' . $data['nameController'] . '::index\');' . "\n\t";
+        $data_to_write .= '$routes->get(\'' . $data['table'] . '/add\',\'' . $data['nameController'] . '::add\');' . "\n\t";
+        $data_to_write .= '$routes->post(\'' . $data['table'] . '/save\',\'' . $data['nameController'] . '::save\');' . "\n\t";
+        $data_to_write .= '$routes->get(\'' . $data['table'] . '/edit/(:any)\',\'' . $data['nameController'] . '::edit/$1\');' . "\n\t";
+        $data_to_write .= '$routes->post(\'' . $data['table'] . '/update\',\'' . $data['nameController'] . '::update\');' . "\n\t";
+        $data_to_write .= '$routes->get(\'' . $data['table'] . '/delete/(:any)\',\'' . $data['nameController'] . '::delete/$1\');';
+
+        //var_dump($data_to_write);
+        if (!strpos($routeFileContents, $data_to_write)) {
+            $newContents = str_replace($routeFileItemHook, $routeFileItemHook . ';' . PHP_EOL . $data_to_write, $routeFileContents);
+            //var_dump($data_to_write);
+            file_put_contents($routeFile, $newContents);
+        }
+    }
+
+    //   public function createRoute($data)
+    //   {
+    //       $route_file = APPPATH.'Config/Routes.php';
+    //       $string = file_get_contents($route_file);
+
+    //       $data_to_write ="\n//". humanize($data['table']) ." Routes\n";
+    //       $data_to_write.='$routes->get(\''.$data['table'].'\',\''.$data['nameController'].'::index\');'."\n";
+    // $data_to_write.='$routes->get(\''.$data['table'].'/add\',\''.$data['nameController'].'::add\');'."\n"; 
+    // $data_to_write.='$routes->post(\''.$data['table'].'/save\',\''.$data['nameController'].'::save\');'."\n";
+    //       $data_to_write.='$routes->get(\''.$data['table'].'/edit/(:any)\',\''.$data['nameController'].'::edit/$1\');'."\n";
+    //       $data_to_write.='$routes->post(\''.$data['table'].'/update\',\''.$data['nameController'].'::update\');'."\n";
+    // $data_to_write.='$routes->get(\''.$data['table'].'/delete/(:any)\',\''.$data['nameController'].'::delete/$1\');';
+
+    //           if (!strpos($string, $data_to_write)) {
+    //               file_put_contents($route_file, $data_to_write, FILE_APPEND);
+    //           }
+    //   }
+
     public function createDirectory($path, $perms = 0755)
     {
         if (is_dir($path)) {
@@ -314,61 +372,5 @@ trait GenerateMigFromTable
         $segments = explode('/', $file);
         array_pop($segments);
         return $folder = implode('/', $segments);
-    }
-
-    public function string_by_type(object $field_data) : string
-    {
-        if ($field_data->type == ''){
-            return 'Error type field';
-        }
-        $max_length = $field_data->max_length != '' ? $field_data->max_length : false;
-        $default    = $field_data->default    != null ? $field_data->default    : false;
-        $name       = $field_data->name       ;
-        $nullable   = $field_data->nullable   === true ? $field_data->nullable   : false;
-        $primay_key = $field_data->primay_key != 0 ? $field_data->primay_key : false;
-        $type       = $field_data->type       ;
-        $unsigned   = $field_data->unsigned   === true ? $field_data->unsigned   : false;
-        $auto_increment = $field_data->auto_increment === true ? $field_data->auto_increment : false;
-
-        $start = $name.' => [';
-
-        $after = '';
-        if ($default) { $after .= '\'default\' => \''. $default. '\', '; }
-        if ($nullable) { $after .= '\'null\' => true, '; }
-        if ($max_length) { $after .= '\'constraint\' => '. $max_length. ', '; }
-            else { 
-                if ($type == 'int') { $after .= '\'constraint\' => 11, '; }
-                if ($type == 'varchar') { $after .= '\'constraint\' => 250, '; }
-             }
-        if ($unsigned) { $after .= '\'unsigned\' => true, '; }
-        if ($auto_increment) { $after .= '\'autoIncrement\' => true, '; }
-
-        $string = '';
-        switch ($type) {
-            case 'int':
-                $string = '\'type\' => \'int\', \'constraint\' => 11, \'unsigned\' => true,';
-                break;
-            case 'varchar':
-                $string = '\'type\' => \'varchar\', \'constraint\' => 250, \'null\' => true,';
-                break;
-            case 'date':
-                $string = '\'type\' => \'date\', \'null\' => true,';
-                break;
-            case 'datetime':
-                $string = '\'type\' => \'datetime\', \'null\' => true,';
-                break;
-            case 'timestamp':
-                $string = '\'type\' => \'timestamp\', \'null\' => true,';
-                break;
-            case 'time':
-                $string = '\'type\' => \'time\', \'null\' => true,';
-                break;
-            case 'text':
-                $string = 'textarea';
-                break;
-        }
-        $end = '],';
-        $final = $start. ''. $string. ''. $after. ''. $end;
-        return $final;
     }
 }

@@ -4,21 +4,119 @@ namespace Matleyx\CI4P\Libraries;
 
 use Config\Autoload;
 use Config\Services;
+use Config\Database;
 
-trait GenerateCrud
+trait GetInfo
     {
-
-    protected function getPathOutput($folder = '', $namespace = 'App')
+    protected function __construct()
         {
-        // Get namespace location form  PSR4 paths.
-        $config   = new Autoload();
-        $location = $config->psr4[$namespace];
-
-        $path = rtrim($location, '/') . "/" . $folder;
-
-        return rtrim($this->normalizePath($path), '/ ') . '/';
+        helper('array');
+        }
+    protected function getDatabases()
+        {
+        $all_conf  = new Database();
+        $string_db = '';
+        foreach ($all_conf as $key => $value)
+            {
+            if ($key != 'filesPath' and $key != 'defaultGroup')
+                {
+                $string_db .= $key . ', ';
+                }
+            }
+        return $string_db;
         }
 
+    protected function getTables($db_in_use)
+        {
+        $all_conf = new Database();
+        if (isset($all_conf->$db_in_use))
+            {
+            $db     = Database::connect($db_in_use);
+            $tables = $db->listTables();
+            return $tables;
+            }
+        else
+            {
+            //db connection  not initialized
+            return false;
+            }
+
+        }
+    protected function getFields($db_in_use, $table)
+        {
+        $db = Database::connect($db_in_use);
+        if ($db->tableExists($table))
+            {
+            $fields = $db->getFieldData($table);
+            return $fields;
+            }
+        else
+            {
+            return false;
+            }
+        }
+    protected function getIndex($db_in_use, $table)
+        {
+        $db = Database::connect($db_in_use);
+        if ($db->tableExists($table))
+            {
+            $fk_found = o_t_a($db->getIndexData($table));
+            var_dump($fk_found);
+            // if ($fk_found)
+            //     {
+            //     foreach ($fk_found as $fk)
+            //         {
+            //         $result[$fk['column_name'][0]] = array(
+            //             'tab_name'            => $table,
+            //             'column_name'         => $fk['column_name'],
+            //             'foreign_table_name'  => $fk['foreign_table_name'],
+            //             'foreign_column_name' => $fk['foreign_column_name'],
+            //             'fk_last'             => substr($fk['foreign_table_name'], -3),
+            //         );
+            //         }
+            //     return $result;
+            //     }
+            // else
+            //     {
+            //     return false;
+            //     }
+            }
+        else
+            {
+            return false;
+            }
+        }
+    protected function getForeignkey($db_in_use, $table)
+        {
+        $db = Database::connect($db_in_use);
+        if ($db->tableExists($table))
+            {
+            $fk_found = o_t_a($db->getForeignKeyData($table));
+            //var_dump($fk_found);
+            if ($fk_found)
+                {
+                foreach ($fk_found as $fk)
+                    {
+                    $result[$fk['column_name'][0]] = array(
+                        'tab_name'            => $table,
+                        'column_name'         => $fk['column_name'],
+                        'foreign_table_name'  => $fk['foreign_table_name'],
+                        'foreign_column_name' => $fk['foreign_column_name'],
+                        'fk_last'             => substr($fk['foreign_table_name'], -3),
+                    );
+                    }
+                return $result;
+                }
+            else
+                {
+                return false;
+                }
+            }
+        else
+            {
+            return false;
+            }
+        }
     protected function normalizePath($path)
         {
         // Array to build a new path from the good parts
@@ -68,6 +166,80 @@ trait GenerateCrud
 
         return implode('/', $parts);
         }
+    protected function normalizeNamespace($namespace)
+        {
+        // Array to build a new path from the good parts
+        $parts = [];
+        // Combine multiple slashes into a single slash
+        $namespace = preg_replace('/\/+/', '/', $namespace);
+        // Replace backslashes with forward slashes
+        $namespace = str_replace('/', '\\', $namespace);
+
+
+
+        // Collect path segments
+        $segments = explode('\\', $namespace);
+
+        // Initialize testing variable
+        $test = '';
+
+        foreach ($segments as $segment)
+            {
+            if ($segment != '.')
+                {
+                $test = array_pop($parts);
+
+                if (is_null($test))
+                    {
+                    $parts[] = $segment;
+                    }
+                else if ($segment == '..')
+                    {
+                    if ($test == '..')
+                        {
+                        $parts[] = $test;
+                        }
+
+                    if ($test == '..' || $test == '')
+                        {
+                        $parts[] = $segment;
+                        }
+                    }
+                else
+                    {
+                    $parts[] = $test;
+                    $parts[] = $segment;
+                    }
+                }
+            }
+
+        return implode('\\', $parts);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    protected function getPathOutput($folder = '', $namespace = 'App')
+        {
+        // Get namespace location form  PSR4 paths.
+        $config   = new Autoload();
+        $location = $config->psr4[$namespace];
+
+        $path = rtrim($location, '/') . "/" . $folder;
+
+        return rtrim($this->normalizePath($path), '/ ') . '/';
+        }
+
+
 
     protected function copyFile($path, $contents = null)
         {
@@ -107,46 +279,9 @@ trait GenerateCrud
         return $output;
         }
 
-    protected function getFields($table)
-        {
-        $this->db = \Config\Database::connect();
-        if ($this->db->tableExists($table))
-            {
-            return $fields = $this->db->getFieldData($table);
-            }
-        else
-            {
-            return false;
-            }
-        }
 
-    protected function getForeignkey($table)
-        {
-        $this->db = \Config\Database::connect();
-        if ($this->db->tableExists($table))
-            {
-            $fk_found = json_decode(json_encode($this->db->getForeignKeyData($table)), true);
-            //var_dump($fk_found);
-            if ($fk_found)
-                {
-                foreach ($fk_found as $fk)
-                    {
-                    $result[$fk['column_name'][0]] = array(
-                        'tab_name'            => $table,
-                        'column_name'         => $fk['column_name'],
-                        'foreign_table_name'  => $fk['foreign_table_name'],
-                        'foreign_column_name' => $fk['foreign_column_name'],
-                        'fk_last'             => substr($fk['foreign_table_name'], -3),
-                    );
-                    }
-                return $result;
-                }
-            }
-        else
-            {
-            return false;
-            }
-        }
+
+
     protected function getPrimaryKey($fields)
         {
         foreach ($fields as $field)
@@ -298,7 +433,6 @@ trait GenerateCrud
         {
         $date           = date('Y_m_d_H_i_s');
         $path_prefix    = '../writable/crud_generator/' . $date . '-' . $data['table'] . '/';
-        $pathRoutes     = $this->getPathOutput($path_prefix . 'Config', $data['namespace']) . 'Routes.php';
         $pathModel      = $this->getPathOutput($path_prefix . 'Models', $data['namespace']) . $data['nameModel'] . '.php';
         $pathController = $this->getPathOutput($path_prefix . 'Controllers', $data['namespace']) . $data['nameController'] . '.php';
         $pathViewadd    = $this->getPathOutput($path_prefix . 'Views', $data['namespace']) . $data['table'] . '/addxx.php';

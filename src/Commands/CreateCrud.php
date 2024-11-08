@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace Matleyx\CI4P\Commands;
 
 use CodeIgniter\CLI\CLI;
@@ -7,88 +7,106 @@ use Matleyx\CI4P\Libraries\GenerateCrud;
 
 class CreateCrud extends BaseCommand
 {
-    //  php spark make:crud --table 'NAMETABLE' --namespace 'NAMESPACE' --database 'database'
+    //  php spark make:crud --table 'NAMETABLE' --namespace 'NAMESPACE'
     use GenerateCrud;
-    protected $group       = 'Generators';
-    protected $name        = 'make:crud';
+    protected $group = 'Generators';
+    protected $name = 'make:crud';
     protected $description = 'Generate CRUD based on model, (External Library)';
-    protected $data        = [];
+    protected $data = [];
 
 
     public function run(array $params)
     {
         helper('inflector');
-        if (    isset($params['table']) )           {   $table          =   $params['table'];   } 
-        if (    isset($params['controllerName']) )  {   $controllerName =   $params['controllerName'];   } 
-        if (    isset($params['modelName']) )       {   $modelName      =   $params['modelName'];   } 
-        if (    isset($params['namespace']) )       {   $namespace      =   $params['namespace'];   } 
-if (    isset($params['database']) )        {   $database       =   $params['database'];   } 
-        if (    isset($params['routegroup']) )      {   $routegroup     =   $params['routegroup'];   } 
-        if (    isset($params['single_rec']) )      {   $single_rec     =   $params['single_rec'];   } 
+        if (isset($params['table']))
+        {
+            $table = $params['table'];
+        }
+        if (isset($params['controllerName']))
+        {
+            $controllerName = $params['controllerName'];
+        }
+        if (isset($params['modelName']))
+        {
+            $modelName = $params['modelName'];
+        }
+        if (isset($params['namespace']))
+        {
+            $namespace = $params['namespace'];
+        }
+        if (isset($params['routegroup']))
+        {
+            $routegroup = $params['routegroup'];
+        }
+        if (isset($params['single_rec']))
+        {
+            $single_rec = $params['single_rec'];
+        }
         CLI::write('Included files: ' . CLI::color(count(get_included_files()), 'yellow'));
-        
+
         //var_dump($table);
         if (empty($table))
         {
-            $table      = CLI::prompt('Enter Table name');
+            $table = CLI::prompt('Enter Table name');
         }
         if ($table == 'users' || $table == 'tbl_users' || $table == 'admins')
         {
-           CLI::write('Cannot generate crud for '. CLI::color( $table , 'yellow') .' Table because it might interfere with your login Crud.', "red");
-          exit;
+            CLI::write('Cannot generate crud for ' . CLI::color($table, 'yellow') . ' Table because it might interfere with your login Crud.', "red");
+            exit;
         }
-$table_pascalized = pascalize(strtolower($table));
-        $controllerName = pascalize($table_pascalized ) .'Controller';
-        $modelName      = pascalize($table_pascalized ) .'Model';
-        
+
         if (empty($namespace))
         {
-            $namespace      = "App";
-            $address_views  = $table;
-        }else{
-            $address_views  = $namespace . "\Views\\" . $table_pascalized;
+            $namespace     = "App";
+            $address_views = $table;
         }
-
-        if (empty($database))
+        else
         {
-            $database      = CLI::prompt('Enter database name');
+            $address_views = $namespace . "\Views\\" . $table;
         }
-        $db_sel = $database;
 
-        $foreignkeys = $this->getForeignkey($table, $db_sel);
-        if (empty($foreignkeys)){$foreignkeys = false;}
-        
-        if ($fields_db =  $this->getFields($table, $db_sel)){
-            if (empty($routegroup)) {
-                $routegroup = CLI::prompt('Which Route group do you want to Use for the routes?', ['manteiners','admin'], 'min_length[3]'); 
+        $controllerName = pascalize($table) . 'Controller';
+        $modelName      = pascalize($table) . 'Model';
+
+        $foreignkeys = $this->getForeignkey($table);
+        if (empty($foreignkeys))
+        {
+            $foreignkeys = false;
+        }
+
+        if ($fields_db = $this->getFields($table))
+        {
+            if (empty($routegroup))
+            {
+                $routegroup = CLI::prompt('Which Route group do you want to Use for the routes?', [ 'manteiners', 'admin' ], 'min_length[3]');
             }
             $this->data = [
-                'table'             => $table,
-                'table_lc'          => strtolower($controllerName),
-                'primaryKey'        => $this->getPrimaryKey($fields_db),
-                'pk_string'         => substr($this->getPrimaryKey($fields_db), -4),
-                'namespace'         => $namespace,
-                'nameEntity'        => ucfirst($table),
-                'singularTable'     => singular($table),
-                'nameModel'         => ucfirst($modelName),
-                'nameController'    => ucfirst($controllerName),
-                'routegroup'        => $routegroup,
-                'foreignkeys'       => $foreignkeys,
-                'address_views'     => $address_views,
-                'allowedFields'     => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['allowedFields'],
-                'fieldsGet'         => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['fieldsGet'],
-                'fieldsData'        => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['fieldsData'],
-                'fieldsVal'         => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['fieldsVal'],
-                'fieldsTh'          => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['fieldsTh'],
-                'fieldsTd'          => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['fieldsTd'],
-                'inputForm'         => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['inputForm'],
-                'editForm'          => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['editForm'],
-                'valueInput'        => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['valueInput'],
-                'modeluse'          => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['modeluse'],
-                'modelprotected'    => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['modelprotected'],
-                'modelconstruct'    => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['modelconstruct'],
-                'modeldatajoin'     => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['modeldatajoin'],
-                'modeljoin'         => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['modeljoin'],
+                'table'          => $table,
+                'table_lc'       => strtolower($controllerName),
+                'primaryKey'     => $this->getPrimaryKey($fields_db),
+                'pk_string'      => substr($this->getPrimaryKey($fields_db), -4),
+                'namespace'      => $namespace,
+                'nameEntity'     => ucfirst($table),
+                'singularTable'  => singular($table),
+                'nameModel'      => ucfirst($modelName),
+                'nameController' => ucfirst($controllerName),
+                'routegroup'     => $routegroup,
+                'foreignkeys'    => $foreignkeys,
+                'address_views'  => $address_views,
+                'allowedFields'  => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['allowedFields'],
+                'fieldsGet'      => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['fieldsGet'],
+                'fieldsData'     => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['fieldsData'],
+                'fieldsVal'      => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['fieldsVal'],
+                'fieldsTh'       => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['fieldsTh'],
+                'fieldsTd'       => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['fieldsTd'],
+                'inputForm'      => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['inputForm'],
+                'editForm'       => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['editForm'],
+                'valueInput'     => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['valueInput'],
+                'modeluse'       => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['modeluse'],
+                'modelprotected' => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['modelprotected'],
+                'modelconstruct' => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['modelconstruct'],
+                'modeldatajoin'  => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['modeldatajoin'],
+                'modeljoin'      => $this->getDatesFromFields($fields_db, $foreignkeys, $namespace, $table)['modeljoin'],
             ];
             //var_dump($foreignkeys);
             $this->createFileCrud($this->data);
@@ -97,7 +115,9 @@ $table_pascalized = pascalize(strtolower($table));
             CLI::write("Views Generated successfully!", "cyan");
             CLI::write("Crud Generated successfully!", "blue");
 
-        }else{
+        }
+        else
+        {
             CLI::write("$table Table no found", "red");
         }
     }

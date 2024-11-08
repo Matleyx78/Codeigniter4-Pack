@@ -8,83 +8,89 @@ use {namespace}\Models\{! nameModel !};
 
 class {! nameController !} extends Controller
 {
-    protected ${! singularTable !};
+protected ${! table_lc !};
 {! modelprotected !}
-    /**
-     * {! nameController !} constructor.
-     */
-    public function __construct()
-    {
-        $user = auth()->user();
-        if (! $user->inGroup('{! routegroup !}')) {
-            echo 'Access denied';
-            exit;
-        }
-        $this->{! singularTable !} = new {! nameModel !}();
+/**
+* {! nameController !} constructor.
+*/
+public function __construct()
+{
+// if (auth()->loggedIn()) {
+// $user = auth()->user();
+// if (! $user->inGroup('xxx')) {
+// echo 'Access denied';
+// exit;
+// }
+// }else{
+// echo 'Access denied';
+// exit;
+// }
+
+$this->{! table_lc !} = new {! nameModel !}();
 {! modelconstruct !}
-        //if (session()->get('role') != "{! routegroup !}") {
-        //    echo 'Access denied';
-        //    exit;
-        //}
-    }
+//if (session()->get('role') != "{! routegroup !}") {
+// echo 'Access denied';
+// exit;
+//}
+}
 
-    public function index()
-    {
-        ${! table !} = $this->{! singularTable !}->findAll();
-        return view('{! address_views !}/index', [
-            '{! table !}' => ${! table !}
-        ]);
-    }
+public function index()
+{
+${! table !} = $this->{! table_lc !}->findAll();
+return view('{! views_path !}/index', [
+'{! table !}' => ${! table !}
+]);
+}
 
-    public function add()
-    {
-        $data = array();
+public function add()
+{
+$data = array();
 {! modeldatajoin !}
-        
-        return view('{! address_views !}/add', $data);
-    }
 
-    public function save()
-    {
+return view('{! views_path !}/add', $data);
+}
+
+public function save()
+{
 {! modeldatajoin !}
 
 {! fieldsGet !}
 
-        $insert_data = [
+$insert_data = [
 {! fieldsData !}
-        ];
-        if ($this->{! singularTable !}->save($insert_data) == false) {
-            $data['errors'] = $this->{! singularTable !}->errors();
-            return view('{! address_views !}/add', $data);
-        } else {
-            return redirect('{! table !}');
-        }
-    }
+];
+if ($this->{! table_lc !}->save($insert_data) == false) {
+$data['errors'] = $this->{! table_lc !}->errors();
+return view('{! views_path !}/add', $data);
+} else {
+return redirect('{! table !}');
+}
+}
 
-    public function edit($id)
-    {
+public function edit($id)
+{
 {! modeldatajoin !}
 
-        ${! singularTable !} = $this->{! singularTable !}->find($id);
-        $data['value'] = ${! singularTable !};
-        return view('{! address_views !}/edit', $data);
-    }
+${! table_lc !} = $this->{! table_lc !}->find($id);
+$data['value'] = ${! table_lc !};
+return view('{! views_path !}/edit', $data);
+}
 
-    public function update()
-    {
-            $id = $this->request->getPost('{! primaryKey !}');
+public function update()
+{
+$id = $this->request->getPost('{! primaryKey !}');
 {! fieldsGet !}
 
-        $insert_data = [
+$insert_data = [
 {! fieldsData !}
-        ];
-        $this->{! singularTable !}->update($id, $insert_data);
-        return redirect('{! table !}');
-    }
+];
+$this->{! table_lc !}->update($id, $insert_data);
+return redirect('{! table !}');
+}
 
-    public function delete($id)
-    {
-        $this->{! singularTable !}->delete($id);
-        return redirect('{! table !}');
-    }
+public function delete($id)
+{
+$this->{! table_lc !}->delete($id);
+return redirect('{! table !}');
+}
 }
