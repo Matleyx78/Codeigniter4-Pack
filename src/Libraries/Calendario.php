@@ -119,9 +119,9 @@ class Calendario
 
         do {
             $timestampvecchia += 86400;
-            $elencogiorni[] = $this->unix_to_human($timestampvecchia, TRUE, 'eu');
+            $elencogiorni[] = unix_to_human($timestampvecchia, TRUE, 'eu');
 
-            if ($this->isgiornolavorativo($this->unix_to_human($timestampvecchia, TRUE, 'eu'))) {
+            if ($this->isgiornolavorativo(unix_to_human($timestampvecchia, TRUE, 'eu'))) {
                 $giorni += 1;
             }
         } while ($timestampvecchia < $timestampgiovane);
@@ -405,7 +405,7 @@ class Calendario
     function sottrai_giornilavorativi($daytime, $giorni)
     {     //Sottrae a daytime $giorni lavorativi e restituisce la data in mysql
         $i = 0;
-        $timestamp = $this->mysql_to_unix($daytime);
+        $timestamp = mysql_to_unix($daytime);
         do {
             $timestamp = $timestamp - (24 * 60 * 60);
             $giorno = date('Y-m-d H:i:s', $timestamp);
@@ -423,8 +423,8 @@ class Calendario
         $next_work_day = '';
         do {
             $adesso += 86400;
-            if ($this->isgiornolavorativo($this->unix_to_human($adesso, TRUE, 'eu'))) {
-                $next_work_day = $this->unix_to_human($adesso, TRUE, 'eu');
+            if ($this->isgiornolavorativo(unix_to_human($adesso, TRUE, 'eu'))) {
+                $next_work_day = unix_to_human($adesso, TRUE, 'eu');
             }
         } while ($next_work_day === '');
 
@@ -445,54 +445,16 @@ class Calendario
         //$yearNum = empty($yearYouWant) ? $yearnow : $yearYouWant;
         //$this->logo = $logoPath;
 
-        $easterDay = $this->Calendario_model->easterDay($yearNum);
+        $easterDay = $this->easterDay($yearNum);
 
 
         for ($i = 1; $i <= 12; $i++) {
             $monthName = $mesiAnno[$i - 1];
-            $calArray[$monthName] = $this->Calendario_model->buildMonths($i, $yearNum, $easterDay);
+            $calArray[$monthName] = $this->buildMonths($i, $yearNum, $easterDay);
         }
         $data['calarray'] = $calArray;
         $data['yearnum'] = $yearNum;
         $data['easterday'] = $easterDay;
-        $this->load->view('prova/prova_dati3', $data);
-    }
-
-    function unix_to_human($time = '', $seconds = FALSE, $fmt = 'us')
-    {
-        $r = date('Y', $time) . '-' . date('m', $time) . '-' . date('d', $time) . ' ';
-
-        if ($fmt === 'us') {
-            $r .= date('h', $time) . ':' . date('i', $time);
-        } else {
-            $r .= date('H', $time) . ':' . date('i', $time);
-        }
-
-        if ($seconds) {
-            $r .= ':' . date('s', $time);
-        }
-
-        if ($fmt === 'us') {
-            return $r . ' ' . date('A', $time);
-        }
-
-        return $r;
-    }
-
-    function mysql_to_unix($datestr = '')
-    {
-        if ($datestr === '') {
-            return FALSE;
-        }
-
-        $gg = substr($datestr, 8, 2); //   2016-08-31 00:00:00
-        $mm = substr($datestr, 5, 2);
-        $yyyy = substr($datestr, 0, 4);
-        $hh = substr($datestr, -8, 2);
-        $ii = substr($datestr, -5, 2);
-        $ss = substr($datestr, -2, 2);
-        $unix = mktime($hh, $ii, $ss, $mm, $gg, $yyyy);
-
-        return $unix;
+        //$this->load->view('prova/prova_dati3', $data);
     }
 }

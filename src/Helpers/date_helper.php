@@ -130,7 +130,22 @@ function datediff($tipo, $partenza, $fine)
     $date_diff = floor(($date_diff / 60 / 60 / 24) / $tipo);
     return $date_diff;
     }
+function mysql_to_unix($datestr = '')
+{
+    if ($datestr === '') {
+        return FALSE;
+    }
 
+    $gg = substr($datestr, 8, 2); //   2016-08-31 00:00:00
+    $mm = substr($datestr, 5, 2);
+    $yyyy = substr($datestr, 0, 4);
+    $hh = substr($datestr, -8, 2);
+    $ii = substr($datestr, -5, 2);
+    $ss = substr($datestr, -2, 2);
+    $unix = mktime($hh, $ii, $ss, $mm, $gg, $yyyy);
+
+    return $unix;
+}
 function now_to_datetime()
     {
     $now = date("Y-m-d H:i:s");

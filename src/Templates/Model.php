@@ -9,12 +9,12 @@ protected $DBGroup = 'default';
 protected $table = '{! table !}';
 protected $primaryKey = '{! primaryKey !}';
 protected $useAutoIncrement = true;
-protected $insertID = 0;
+//protected $insertID = 0;
 protected $returnType = 'array';
 protected $useSoftDeletes = true;
 protected $protectFields = true;
 protected $allowedFields = [
-{! allowedfields !}
+{! allowedFields !}
 ];
 
 // Dates
@@ -33,7 +33,7 @@ protected $skipValidation = false;
 protected $cleanValidationRules = true;
 
 // Callbacks
-protected $allowCallbacks = true;
+protected $allowCallbacks = false;
 protected $beforeInsert = [];
 protected $afterInsert = [];
 protected $beforeUpdate = [];

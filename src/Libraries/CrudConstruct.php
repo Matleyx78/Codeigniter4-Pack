@@ -6,10 +6,10 @@ use Config\Autoload;
 use Config\Services;
 
 trait CrudConstruct
-    {
+{
     //  PATH
-    protected function normalizePath($path)
-        {
+    protected function normalizedPath($path)
+    {
         // Array to build a new path from the good parts
         $parts = [];
 
@@ -25,40 +25,31 @@ trait CrudConstruct
         // Initialize testing variable
         $test = '';
 
-        foreach ($segments as $segment)
-            {
-            if ($segment != '.')
-                {
+        foreach ($segments as $segment) {
+            if ($segment != '.') {
                 $test = array_pop($parts);
 
-                if (is_null($test))
-                    {
+                if (is_null($test)) {
                     $parts[] = $segment;
-                    }
-                else if ($segment == '..')
-                    {
-                    if ($test == '..')
-                        {
+                } else if ($segment == '..') {
+                    if ($test == '..') {
                         $parts[] = $test;
-                        }
-
-                    if ($test == '..' || $test == '')
-                        {
-                        $parts[] = $segment;
-                        }
                     }
-                else
-                    {
+
+                    if ($test == '..' || $test == '') {
+                        $parts[] = $segment;
+                    }
+                } else {
                     $parts[] = $test;
                     $parts[] = $segment;
-                    }
                 }
             }
+        }
 
         return implode('/', $parts);
-        }
-    protected function normalizeNamespace($namespace)
-        {
+    }
+    protected function normalizedNamespace($namespace)
+    {
         // Array to build a new path from the good parts
         $parts = [];
         // Combine multiple slashes into a single slash
@@ -74,108 +65,101 @@ trait CrudConstruct
         // Initialize testing variable
         $test = '';
 
-        foreach ($segments as $segment)
-            {
-            if ($segment != '.')
-                {
+        foreach ($segments as $segment) {
+            if ($segment != '.') {
                 $test = array_pop($parts);
 
-                if (is_null($test))
-                    {
+                if (is_null($test)) {
                     $parts[] = $segment;
-                    }
-                else if ($segment == '..')
-                    {
-                    if ($test == '..')
-                        {
+                } else if ($segment == '..') {
+                    if ($test == '..') {
                         $parts[] = $test;
-                        }
-
-                    if ($test == '..' || $test == '')
-                        {
-                        $parts[] = $segment;
-                        }
                     }
-                else
-                    {
+
+                    if ($test == '..' || $test == '') {
+                        $parts[] = $segment;
+                    }
+                } else {
                     $parts[] = $test;
                     $parts[] = $segment;
-                    }
                 }
             }
+        }
 
         return implode('\\', $parts);
+    }
+    protected function getPathBaseController($namespace)
+    {
+        if ($namespace == 'App') {
+            $pathBaseC = 'CodeIgniter';
+        } else {
+            $pathBaseC = 'App\Controllers';
         }
+        return $pathBaseC;
+    }
     protected function getPathOutput($folder = '', $namespace = 'App')
-        {
+    {
         //Get namespace location form  PSR4 paths.
         $config   = new Autoload();
         $location = $namespace;
 
         $path = rtrim($location, '/') . "/" . $folder;
 
-        return rtrim($this->normalizePath($path), '/ ') . '/';
-        }
-    protected function getPathOutput_OLD($folder = '', $namespace = 'App')
-        {
+        return rtrim($this->normalizedPath($path), '/ ') . '/';
+    }
+    protected function XXgetPathOutput_OLD($folder = '', $namespace = 'App')
+    {
         // Get namespace location form  PSR4 paths.
         $config   = new Autoload();
         $location = $config->psr4[$namespace];
 
         $path = rtrim($location, '/') . "/" . $folder;
 
-        return rtrim($this->normalizePath($path), '/ ') . '/';
-        }
+        return rtrim($this->normalizedPath($path), '/ ') . '/';
+    }
     protected function getPathViews($name_table = '', $namespace = 'App')
-        {
-        if ($namespace == 'App')
-            {
+    {
+        if ($namespace == 'App') {
             $namespace     = "App";
             $address_views = $name_table;
-            }
-        else
-            {
+        } else {
             $address_views = $namespace . "\Views\\" . $name_table;
-            }
-        return $address_views;
         }
+        return $address_views;
+    }
     //  FILES
     protected function copyFile($path, $contents = null)
-        {
+    {
         helper('filesystem');
 
         $folder = $this->getDirOfFile($path);
-        if (!is_dir($folder))
-            {
+        if (!is_dir($folder)) {
             $this->createDirectory($folder);
-            }
+        }
 
-        if (!write_file($path, $contents))
-            {
+        if (!write_file($path, $contents)) {
             throw new \RuntimeException('Unable to create file');
-            }
         }
+    }
     public function createDirectory($path, $perms = 0755)
-        {
-        if (is_dir($path))
-            {
+    {
+        if (is_dir($path)) {
             return $this;
-            }
-
-        if (!mkdir($path, $perms, true))
-            {
-            throw new \RuntimeException(sprintf('Error creating directory', $path));
-            }
-        return $this;
         }
+
+        if (!mkdir($path, $perms, true)) {
+            throw new \RuntimeException(sprintf('Error creating directory', $path));
+        }
+        return $this;
+    }
     public function getDirOfFile($file)
-        {
+    {
         $segments = explode('/', $file);
         array_pop($segments);
         return $folder = implode('/', $segments);
-        }
+    }
     protected function createFileCrud($data)
-        {
+    {
         $date           = date('Y_m_d_H_i_s');
         $path_prefix    = '../writable/crud_generator/' . $date . '-' . $data['table'] . '/';
         $pathModel      = $path_prefix . $this->getPathOutput('Models', $data['namespace']) . $data['nameModel'] . '.php';
@@ -193,19 +177,17 @@ trait CrudConstruct
         $this->copyFile($pathRoute, $this->render('Routes', $data));
 
         //$this->createRoute($data);
-        }
+    }
     public function render($template_name, $data = [])
-        {
-        if (empty($this->parser))
-            {
+    {
+        if (empty($this->parser)) {
             $path         = realpath(__DIR__ . '/../Templates/') . '/';
             $this->parser = Services::parser($path);
-            }
+        }
 
-        if (is_null($this->parser))
-            {
+        if (is_null($this->parser)) {
             throw new \RuntimeException('Unable to create Parser instance.');
-            }
+        }
         $output = $this->parser
             ->setData($data)
             ->render($template_name);
@@ -214,62 +196,53 @@ trait CrudConstruct
         $output = str_replace('!php', '?>', $output);
         $output = str_replace('@=', '<?=', $output);
         return $output;
-        }
+    }
     //  HTML OUTPUT    
     protected function getDatesForModel($fields, $foreignkeys, $namespace = 'App')
-        {
-        if ($foreignkeys !== false)
-            {
-            foreach ($foreignkeys as $fk)
-                {
+    {
+        if ($foreignkeys !== false) {
+            foreach ($foreignkeys as $fk) {
                 $modeluse[]       = 'use ' . $namespace . '\Models\\' . pascalize($fk['foreign_table_name']) . 'Model;';
                 $modelprotected[] = "\t" . 'protected $' . $fk['foreign_table_name'] . ';';
                 $modelconstruct[] = "\t\t" . '$this->' . $fk['foreign_table_name'] . ' = new ' . pascalize($fk['foreign_table_name']) . 'Model;';
                 $modeldatajoin[]  = "\t\t" . '$data[\'' . $fk['foreign_table_name'] . '\'] = $this->' . $fk['foreign_table_name'] . '->findAll();';
-                }
+            }
             $model_rows_join = '';
-            foreach ($foreignkeys as $fk)
-                {
+            foreach ($foreignkeys as $fk) {
                 $model_rows_join .= "\t\t" . '$this->join(\'' . $fk['foreign_table_name'] . '\', \'' . $fk['foreign_table_name'] . '.' . $fk['foreign_column_name'][0] . ' = ' . $fk['tab_name'] . '.' . $fk['column_name'][0] . '\');' . "\n";
-                }
-            $modeljoin = "\t" . 'public function j_findAll(){' . "\n";
+            }
+            $modeljoin = "\t" . 'function j_findAll(){' . "\n";
             $modeljoin .= "\t\t" . '$this->select(\'*\');' . "\n";
             $modeljoin .= $model_rows_join;
             $modeljoin .= "\t\t" . 'return $this->findAll();' . "\n";
             $modeljoin .= "\t" . '}' . "\n";
             $modeljoin .= "\t\n";
-            $modeljoin .= "\t" . 'public function j_find($id){' . "\n";
+            $modeljoin .= "\t" . 'function j_find($id){' . "\n";
             $modeljoin .= "\t\t" . '$this->select(\'*\');' . "\n";
             $modeljoin .= $model_rows_join;
             $modeljoin .= "\t\t" . 'return $this->find($id);' . "\n";
             $modeljoin .= "\t" . '}' . "\n";
             $modeljoin .= "\t\n";
-
-            }
-        else
-            {
+        } else {
             $modeluse[]       = '';
             $modelprotected[] = '';
             $modelconstruct[] = '';
             $modeldatajoin[]  = '';
             $modeljoin        = '';
+        }
+        foreach ($fields as $field) {
+            if ((!$field->primary_key && !strpos($field->name, 'created_at') !== false && !strpos($field->name, 'updated_at') !== false && !strpos($field->name, 'deleted_at') !== false)) {
+                $allowedFields[] = "\t\t\t" . "'" . $field->name . "',";
             }
-        foreach ($fields as $field)
-            {
-            if ((!$field->primary_key && !strpos($field->name, 'created_at') !== false && !strpos($field->name, 'updated_at') !== false && !strpos($field->name, 'deleted_at') !== false))
-                {
-                $allowedFields[] = "\t\t\t" . "'" . $field->name . "'";
-                }
-            }
-        if (!isset($allowedFields))
-            {
+        }
+        if (!isset($allowedFields)) {
             $allowedFields[] = '';
-            }
+        }
 
-        echo "Inizio\n";
-        var_dump($fields);
-        echo "Fine\n";
-        $option_box = "\t" . 'public function getForOptionBox(){' . "\n";
+        // echo "Inizio\n";
+        // var_dump($allowedFields);
+        // echo "Fine\n";
+        $option_box = "\t" . 'function getForOptionBox(){' . "\n";
         $option_box .= "\t\t" . '$this->select(\'Field1,Field2\');' . "\n";
         $option_box .= "\t\t" . '$this->orderBy(\'Field2\');' . "\n";
         $option_box .= "\t\t" . '$all_for_opt_box_ini = $this->findAll();' . "\n";
@@ -280,43 +253,37 @@ trait CrudConstruct
         $option_box .= "\t\t" . 'return $all_for_opt_box_fin;' . "\n";
         $option_box .= "\t" . '}' . "\n";
         return array(
-            'allowedfields'  => join("\n", $allowedFields),
+            'allowedFields'  => join("\n", $allowedFields),
             'modeluse'       => join("\n", $modeluse),
             'modelprotected' => join("\n", $modelprotected),
             'modelconstruct' => join("\n", $modelconstruct),
             'modeldatajoin'  => join("\n", $modeldatajoin),
             'modeljoin'      => $modeljoin,
             'optionBox'      => $option_box,
-            );
-        }
+        );
+    }
     protected function getDatesForTable($fields)
-        {
-        foreach ($fields as $field)
-            {
-            if ((!$field->primary_key && !strpos($field->name, 'created_at') !== false && !strpos($field->name, 'updated_at') !== false && !strpos($field->name, 'deleted_at') !== false))
-                {
-                if (!$field->primary_key && $field->name !== 'password')
-                    {
+    {
+        foreach ($fields as $field) {
+            if ((!$field->primary_key && !strpos($field->name, 'created_at') !== false && !strpos($field->name, 'updated_at') !== false && !strpos($field->name, 'deleted_at') !== false)) {
+                if (!$field->primary_key && $field->name !== 'password') {
                     $fields_th[] = "\t\t\t\t\t\t<th>" . ucwords(str_replace('_', ' ', ($field->name))) . "</th>";
                     $fields_td[] = "\t\t\t\t\t\t\t\t" . '<td><?php echo $row[\'' . $field->name . '\']; ?></td>';
-                    }
                 }
             }
+        }
 
         return array(
             'fieldsTh' => join("\n", $fields_th),
             'fieldsTd' => join("\n", $fields_td),
-            );
-        }
+        );
+    }
     protected function getDatesForForms($fields, $foreignikeys)
-        {
-        foreach ($fields as $field)
-            {
-            if ((!$field->primary_key && !strpos($field->name, 'created_at') !== false && !strpos($field->name, 'updated_at') !== false && !strpos($field->name, 'deleted_at') !== false))
-                {
+    {
+        foreach ($fields as $field) {
+            if ((!$field->primary_key && !strpos($field->name, 'created_at') !== false && !strpos($field->name, 'updated_at') !== false && !strpos($field->name, 'deleted_at') !== false)) {
 
-                if (!empty($foreignikeys) and array_key_exists($field->name, $foreignikeys))
-                    {
+                if (!empty($foreignikeys) and array_key_exists($field->name, $foreignikeys)) {
                     //var_dump($foreignikeys[$field->name]);
                     $inputForm[] =
                         "\t\t\t\t\t\t\t" . '<div class="row clearfix">
@@ -342,9 +309,7 @@ trait CrudConstruct
                                     </div>
                                 </div>
                             </div>';
-                    }
-                elseif ($this->getTypeInput($field->type) != 'textarea')
-                    {
+                } elseif ($this->getTypeInput($field->type) != 'textarea') {
                     $inputForm[] =
                         "\t\t\t\t\t\t\t" . '<div class="row clearfix">
                                 <div class="col-md-6"> <label class="form-label" for="' . $field->name . '">' . ucwords(str_replace('_', ' ', ($field->name))) . '</label>
@@ -361,9 +326,7 @@ trait CrudConstruct
                                     </div>    
                                 </div>
                             </div>';
-                    }
-                else
-                    {
+                } else {
                     $inputForm[] =
                         "\t\t\t\t\t\t\t" . '<div class="col-md-12"> <label class="form-label" for="' . $field->name . '">' . ucwords(str_replace('_', ' ', ($field->name))) . '</label>
 							    <textarea name="' . $field->name . '" class="form-control" id="' . $field->name . '" placeholder="' . ucwords(str_replace('_', ' ', ($field->name))) . '"></textarea>
@@ -373,37 +336,35 @@ trait CrudConstruct
 							    <label class="form-label" for="' . $field->name . '">' . ucwords(str_replace('_', ' ', ($field->name))) . '</label>
 							    <textarea name="' . $field->name . '" class="form-control" id="' . $field->name . '"><?php echo $value[\'' . $field->name . '\']; ?></textarea>
 			                </div>';
-                    }
                 }
             }
+        }
 
         return array(
             'inputForm' => join("\n", $inputForm),
             'editForm'  => join("\n", $editForm),
         );
-        }
+    }
     protected function getDatesForFields($fields)
-        {
-        foreach ($fields as $field)
-            {
-            if ((!$field->primary_key && !strpos($field->name, 'created_at') !== false && !strpos($field->name, 'updated_at') !== false && !strpos($field->name, 'deleted_at') !== false))
-                {
+    {
+        foreach ($fields as $field) {
+            if ((!$field->primary_key && !strpos($field->name, 'created_at') !== false && !strpos($field->name, 'updated_at') !== false && !strpos($field->name, 'deleted_at') !== false)) {
                 $fields_get[]  = "\t\t\t$" . $field->name . ' = $this->request->getPost(\'' . $field->name . '\');';
-                $fields_data[] = "\t\t\t'" . $field->name . '\' => $' . $field->name . '';
+                $fields_data[] = "\t\t\t" . '$insert_data->' . $field->name . ' = $' . $field->name . ';';
                 $fields_val[]  = "\t'" . $field->name . '\'=>\'required\'';
                 $valueInput[]  = '$(\'[name="' . $field->name . '"]\').val((data.' . $field->name . '));';
-                }
             }
+        }
 
         return array(
             'fieldsGet'  => join("\n", $fields_get),
-            'fieldsData' => join(",\n", $fields_data),
+            'fieldsData' => join("\n", $fields_data),
             'fieldsVal'  => join(",\n", $fields_val),
             'valueInput' => join("\n", $valueInput),
         );
-        }
+    }
     protected function getDatesForRoutes($general_data)
-        {
+    {
         $route_d[] = "\t\t\t$" . 'routes->get(\'' . $general_data['table_lc'] . '\',\'' . $general_data['nameController'] . '::index\');';
         $route_d[] = "\t\t\t$" . 'routes->get(\'' . $general_data['table_lc'] . '/add\',\'' . $general_data['nameController'] . '::add\');';
         $route_d[] = "\t\t\t$" . 'routes->post(\'' . $general_data['table_lc'] . '/save\',\'' . $general_data['nameController'] . '::save\');';
@@ -414,9 +375,9 @@ trait CrudConstruct
         return array(
             'routes_coll' => join("\n", $route_d),
         );
-        }
+    }
     public function XX_createRoute($data)
-        {
+    {
         $routeFile         = APPPATH . 'Config/Routes.php';
         $routeFileContents = file_get_contents($routeFile);
         //$routeFileItemHook = '$routes->group('. '\''.$data['routegroup']. '\'' . ', [\'filter\' => \'auth\'], function($routes){';
@@ -431,12 +392,10 @@ trait CrudConstruct
         $data_to_write .= '$routes->get(\'' . $data['table'] . '/delete/(:any)\',\'' . $data['nameController'] . '::delete/$1\');';
 
         //var_dump($data_to_write);
-        if (!strpos($routeFileContents, $data_to_write))
-            {
+        if (!strpos($routeFileContents, $data_to_write)) {
             $newContents = str_replace($routeFileItemHook, $routeFileItemHook . ';' . PHP_EOL . $data_to_write, $routeFileContents);
             //var_dump($data_to_write);
             file_put_contents($routeFile, $newContents);
-            }
         }
-
     }
+}

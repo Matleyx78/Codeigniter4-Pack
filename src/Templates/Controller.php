@@ -1,19 +1,21 @@
 @php
 namespace {namespace}\Controllers;
 
-use CodeIgniter\Controller;
+use {! bc_path !}\BaseController;
 use {namespace}\Models\{! nameModel !};
+
+use stdClass;
 
 {! modeluse !}
 
-class {! nameController !} extends Controller
+class {! nameController !} extends BaseController
 {
-protected ${! table_lc !};
+protected $model_{! table_lc !};
 {! modelprotected !}
 /**
 * {! nameController !} constructor.
 */
-public function __construct()
+function __construct()
 {
 // if (auth()->loggedIn()) {
 // $user = auth()->user();
@@ -26,7 +28,7 @@ public function __construct()
 // exit;
 // }
 
-$this->{! table_lc !} = new {! nameModel !}();
+$this->model_{! table_lc !} = new {! nameModel !}();
 {! modelconstruct !}
 //if (session()->get('role') != "{! routegroup !}") {
 // echo 'Access denied';
@@ -34,15 +36,13 @@ $this->{! table_lc !} = new {! nameModel !}();
 //}
 }
 
-public function index()
+function index()
 {
-${! table !} = $this->{! table_lc !}->findAll();
-return view('{! views_path !}/index', [
-'{! table !}' => ${! table !}
-]);
+$data['{! table !}'] = $this->model_{! table_lc !}->findAll();
+return view('{! views_path !}/index', $data);
 }
 
-public function add()
+function add()
 {
 $data = array();
 {! modeldatajoin !}
@@ -50,47 +50,47 @@ $data = array();
 return view('{! views_path !}/add', $data);
 }
 
-public function save()
+function save()
 {
 {! modeldatajoin !}
 
 {! fieldsGet !}
 
-$insert_data = [
+$insert_data = new stdClass();
 {! fieldsData !}
-];
-if ($this->{! table_lc !}->save($insert_data) == false) {
-$data['errors'] = $this->{! table_lc !}->errors();
+
+if ($this->model_{! table_lc !}->save($insert_data) == false) {
+$data['errors'] = $this->model_{! table_lc !}->errors();
 return view('{! views_path !}/add', $data);
 } else {
 return redirect('{! table !}');
 }
 }
 
-public function edit($id)
+function edit($id)
 {
 {! modeldatajoin !}
 
-${! table_lc !} = $this->{! table_lc !}->find($id);
+${! table_lc !} = $this->model_{! table_lc !}->find($id);
 $data['value'] = ${! table_lc !};
 return view('{! views_path !}/edit', $data);
 }
 
-public function update()
+function update()
 {
 $id = $this->request->getPost('{! primaryKey !}');
 {! fieldsGet !}
 
-$insert_data = [
+$insert_data = new stdClass();
 {! fieldsData !}
-];
-$this->{! table_lc !}->update($id, $insert_data);
+
+$this->model_{! table_lc !}->update($id, $insert_data);
 return redirect('{! table !}');
 }
 
-public function delete($id)
+function delete($id)
 {
-$this->{! table_lc !}->delete($id);
+$this->model_{! table_lc !}->delete($id);
 return redirect('{! table !}');
 }
 }
