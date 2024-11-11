@@ -78,3 +78,41 @@ function trim_all_multidim_array($array)//trim_multidim_array
         }
     return $temp_array;
 }
+    function array_to_csv($array, $attachment = false, $headers = true, $filename = '') {
+               $now = date("Y-m-d_H-i-s");
+        if ($filename === '')
+            {
+                $filename = 'AutoNameCsvFromArray';
+            }
+        $filename = $filename."_".$now.".csv";
+        
+        if($attachment) {
+            // send response headers to the browser
+            header( 'Content-Type: text/csv' );
+            header( 'Content-Disposition: attachment;filename='.$filename);
+            $fp = fopen('php://output', 'w');
+        } else {
+            $fp = fopen($filename, 'w');
+        }
+       
+        $result = $array;
+       
+        if($headers) {
+            // output header row (if at least one row exists)
+            $row = $result[0];
+            if($row) {
+                fputcsv($fp, array_keys($row),';');
+                // reset pointer back to beginning
+                //mysql_data_seek($result, 0);
+            }
+        }
+       foreach ($result as $row)
+            {
+                fputcsv($fp, $row,';');
+            }
+//        while($row = mysql_fetch_assoc($result)) {
+//            fputcsv($fp, $row);
+//        }
+       
+        fclose($fp);
+    }
