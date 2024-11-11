@@ -65,3 +65,16 @@ function o_t_a($object)//object to array
     $array = json_decode(json_encode($object), true);
     return $array;
     }
+function trim_all_multidim_array($array)//trim_multidim_array
+        {
+    $temp_array = array();
+   
+    foreach($array as $key1=>$val1)
+        {
+            foreach ($val1 as $key2=>$val2)
+                {
+                    $temp_array[$key1][$key2] = trim($val2);
+                }
+        }
+    return $temp_array;
+}
