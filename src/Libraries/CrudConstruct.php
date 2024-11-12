@@ -248,7 +248,9 @@ trait CrudConstruct
         $option_box .= "\t\t" . '$all_for_opt_box_ini = $this->findAll();' . "\n";
         $option_box .= "\t\t" . 'foreach ($all_for_opt_box_ini as $in)' . "\n";
         $option_box .= "\t\t\t" . '{' . "\n";
-        $option_box .= "\t\t\t" . '$all_for_opt_box_fin[$in[\'Field1\']] = $in[\'Field2\'];' . "\n";
+        $option_box .= "\t\t\t" . '$r[\'Field1\'] = $in[\'Field1\']' . "\n";
+        $option_box .= "\t\t\t" . '$r[\'Field2\'] = $in[\'Field2\']' . "\n";
+        $option_box .= "\t\t\t" . '$all_for_opt_box_fin[] = $r;' . "\n";
         $option_box .= "\t\t\t" . '}' . "\n";
         $option_box .= "\t\t" . 'return $all_for_opt_box_fin;' . "\n";
         $option_box .= "\t" . '}' . "\n";
