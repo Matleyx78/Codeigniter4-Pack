@@ -3,7 +3,7 @@ namespace Matleyx\CI4P\Cells;
 
 use Matleyx\CI4P\Models\MenuItemsModel;
 
-class MenuCellOld
+class MenuCell_OLD
 {
     public $string = '';
     public function __construct($stringa = '')
