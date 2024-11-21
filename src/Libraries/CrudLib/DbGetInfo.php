@@ -1,11 +1,22 @@
 <?php
 // php spark make:crud --table 'cmms_activity' --namespace 'Matleyx\CI4CMMS'
-namespace Matleyx\CI4P\Libraries;
+namespace Matleyx\CI4P\Libraries\CrudLib;
 
 use Config\Database;
 
 trait DbGetInfo
 {
+    protected function getGeneralData($table, $db_in_use, $namespace)
+    {
+        $all_conf  = new Database();
+        $string_db = '';
+        foreach ($all_conf as $key => $value) {
+            if ($key != 'filesPath' and $key != 'defaultGroup') {
+                $string_db .= $key . ', ';
+            }
+        }
+        return $string_db;
+    }
     protected function getDatabases()
     {
         $all_conf  = new Database();
@@ -44,7 +55,7 @@ trait DbGetInfo
         $db = Database::connect($db_in_use);
         if ($db->tableExists($table)) {
             $index_found = o_t_a($db->getIndexData($table));
-            var_dump($index_found);
+            //var_dump($index_found);
             if ($index_found) {
                 foreach ($index_found as $if) {
                     $std_fields[$if['fields'][0]]['index'] = $if;

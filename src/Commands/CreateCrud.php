@@ -4,15 +4,23 @@ namespace Matleyx\CI4P\Commands;
 
 use CodeIgniter\CLI\CLI;
 use CodeIgniter\CLI\BaseCommand;
-use Matleyx\CI4P\Libraries\CrudConstruct;
-use Matleyx\CI4P\Libraries\DbGetInfo;
+use Matleyx\CI4P\Libraries\CrudLib\PathUtils;
+use Matleyx\CI4P\Libraries\CrudLib\CrudConstruct;
+use Matleyx\CI4P\Libraries\CrudLib\DbGetInfo;
+use Matleyx\CI4P\Libraries\CrudLib\FileSysUtils;
+use Matleyx\CI4P\Libraries\CrudLib\HtmlEditFormGenerator;
+use Matleyx\CI4P\Libraries\CrudLib\HtmlInputFormGenerator;
+
 
 class CreateCrud extends BaseCommand
 {
     //  php spark make:crud --table 'NAMETABLE' --namespace 'NAMESPACE'
+    use PathUtils;
     use CrudConstruct;
-    //use GenerateCrud;
+    use FileSysUtils;
     use DbGetInfo;
+    use HtmlEditFormGenerator;
+    use HtmlInputFormGenerator;
     protected $group = 'Generators';
     protected $name = 'make:crud';
     protected $description = 'Generate CRUD based on model, (External Library)';
@@ -41,12 +49,11 @@ class CreateCrud extends BaseCommand
         }
         $namespace      = CLI::prompt('Which Namespace do you want to Use?', ['App'], 'min_length[3]');
 
-        // $table          = 'adhoc_sv002';
+        // $table          = 'prog_vern_ragg';
         // $db_in_use      = 'default';
-        // $namespace = 'Moduli\Adhoc';
+        // $namespace = 'Moduli/Cairo';
         $table_as_it = $table;
         $table_lc    = strtolower($table_as_it);
-
         $singular_table = $table_lc;
 
         $namespace      = $this->normalizedNamespace($namespace);
@@ -70,14 +77,6 @@ class CreateCrud extends BaseCommand
             $std_fields  = $foreignkeys['std_fields'];
             $foreignkeys = $foreignkeys['result'];
         }
-        // CLI::write('Primary Key:', 'yellow');
-        // var_dump($primarykey);
-        // CLI::write('Fields Standardize', 'green');
-        // var_dump($std_fields);
-        // CLI::write('Index Data:', 'blue');
-        // var_dump($index_data);
-        // CLI::write('foreign Key:', 'blue');
-        // var_dump($foreignkeys);
         $general_data = [
             'table'          => $table_as_it,
             'table_lc'       => $table_lc,
@@ -95,12 +94,14 @@ class CreateCrud extends BaseCommand
             'views_path'     => $views_path,
         ];
 
+
         $model_data  = $this->getDatesForModel($fields, $foreignkeys, $namespace);
         $table_data  = $this->getDatesForTable($fields);
-        $forms_data  = $this->getDatesForForms($fields, $foreignkeys);
-        $field_data   = $this->getDatesForFields($fields);
+        $form_input  = $this->getInputForm($fields, $foreignkeys);
+        $form_edit  = $this->getEditForm($fields, $foreignkeys);
+        $field_data  = $this->getDatesForFields($fields);
         $routes_data = $this->getDatesForRoutes($general_data);
-        $this->data  = array_merge($general_data, $model_data, $table_data, $forms_data, $field_data, $routes_data);
+        $this->data  = array_merge($general_data, $model_data, $table_data, $form_input, $form_edit, $field_data, $routes_data);
         $this->createFileCrud($this->data);
 
 

@@ -38,31 +38,42 @@ $this->model_{! table_lc !} = new {! nameModel !}();
 
 function index()
 {
-$data['{! table !}'] = $this->model_{! table_lc !}->findAll();
-return view('{! views_path !}/index', $data);
+$result = $this->model_{! table_lc !}->fetch_{!pluralRecord!}(10);
+$data['pager'] = $result['pager'];
+$data['{! table !}'] = $result['{! table !}'];
+return view('{! views_path !}\index', $data);
 }
-
+function list_all()
+{
+$data['{! table !}'] = $this->model_{! table_lc !}->findAll();
+return view('{! views_path !}\index', $data);
+}
 function add()
 {
 $data = array();
 {! modeldatajoin !}
-
-return view('{! views_path !}/add', $data);
+return view('{! views_path !}\add', $data);
 }
-
 function save()
 {
-{! modeldatajoin !}
-
-{! fieldsGet !}
-
+$validation = service('validation');
+$rules = [
+{! fieldsVal !}
+];
+$validation->setRules($rules);
+if ($validation->run($this->request->getPost())) {
 $insert_data = new stdClass();
-{! fieldsData !}
+{! fieldsDataC !}
 
-if ($this->model_{! table_lc !}->save($insert_data) == false) {
+if ($this->model_{! table_lc !}->insert($insert_data) == false) {
 $data['errors'] = $this->model_{! table_lc !}->errors();
-return view('{! views_path !}/add', $data);
+return view('{! views_path !}\add', $data);
 } else {
+session()->setFlashdata('flashSuccess', 'Perfetto');
+return redirect('{! table !}');
+}
+}else {
+session()->setFlashdata('flashError', 'Error');
 return redirect('{! table !}');
 }
 }
@@ -73,22 +84,34 @@ function edit($id)
 
 ${! table_lc !} = $this->model_{! table_lc !}->find($id);
 $data['value'] = ${! table_lc !};
-return view('{! views_path !}/edit', $data);
+return view('{! views_path !}\edit', $data);
 }
 
 function update()
 {
 $id = $this->request->getPost('{! primaryKey !}');
-{! fieldsGet !}
-
+$validation = service('validation');
+$rules = [
+{! fieldsVal !}
+];
+$validation->setRules($rules);
+if ($validation->run($this->request->getPost())) {
 $insert_data = new stdClass();
-{! fieldsData !}
+{! fieldsDataC !}
 
-$this->model_{! table_lc !}->update($id, $insert_data);
+if ($this->model_{! table_lc !}->update($id, $insert_data) == false) {
+$data['errors'] = $this->model_{! table_lc !}->errors();
+return view('{! views_path !}\edit', $data);
+} else {
+session()->setFlashdata('flashSuccess', 'Perfetto');
+return redirect('{! table !}');
+}
+}
+session()->setFlashdata('flashError', 'Error');
 return redirect('{! table !}');
 }
 
-function delete($id)
+function Xdelete($id)
 {
 $this->model_{! table_lc !}->delete($id);
 return redirect('{! table !}');

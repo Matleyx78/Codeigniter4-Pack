@@ -44,5 +44,19 @@ protected $beforeDelete = [];
 protected $afterDelete = [];
 
 {! optionBox !}
+
+function fetch_{!pluralRecord!}(?int $perPage = null)
+{
+$pager = service('pager');
+
+$this->builder()
+->select('*');
+//->join('category', 'news.category_id = category.id');
+
+return [
+'{! table !}' => $this->paginate($perPage),
+'pager' => $this->pager,
+];
+}
 {! modeljoin !}
 }
