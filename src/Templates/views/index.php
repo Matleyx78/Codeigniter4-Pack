@@ -23,6 +23,7 @@
 			<div class="panel-body">
 				<div class="table-responsive">
 					<table class="table table-striped">
+					<thead>
 						<tr>
 							{! fieldsTh !}
 							<th>Action</th>
