@@ -37,7 +37,7 @@ trait HtmlInputFormGenerator
                             $standard[]   =     '$(function () {';
                             $standard[]   =     '$(\'#datetimepicker' . $field->name . '\').datetimepicker({';
                             $standard[]   =     'locale: \'it\',';
-                            $standard[]   =     'format: \'YYYY-MM-DD\'';
+                            $standard[]   =     'format: \'DD/MM/YYYY\'';
                             $standard[]   =     '});';
                             $standard[]   =     '});';
                             $standard[]   =     '</script>';
@@ -53,7 +53,7 @@ trait HtmlInputFormGenerator
                             $standard[]   =     '$(function () {';
                             $standard[]   =     '$(\'#datetimepicker' . $field->name . '\').datetimepicker({';
                             $standard[]   =     'locale: \'it\',';
-                            $standard[]   =     'format: \'YYYY-MM-DD HH:mm:ss\'';
+                            $standard[]   =     'format: \'DD/MM/YYYY HH:mm:ss\'';
                             $standard[]   =     '});';
                             $standard[]   =     '});';
                             $standard[]   =     '</script>';

@@ -228,3 +228,38 @@ function nice_date($bad_date = '', $format = FALSE)
     // It's probably a valid-ish date format already
     return date($format, strtotime($bad_date));
 }
+function dtp_ita_to_mysqldatetime($datestr = '')    //dal datetimepicker italiano 12/03/1956 12:30:00
+{
+    $datestr = trim($datestr);
+    $lung = strlen($datestr);
+    if ($datestr === '' or $lung < 10) {
+        return FALSE;
+    }
+    $gg    = substr($datestr, 0, 2);
+    $mm    = substr($datestr, 3, 2);
+    $yyyy  = substr($datestr, 6, 4);
+    switch ($lung) {
+        case 10: // 12/03/1956
+            $mysql = "$yyyy-$mm-$gg";
+            return $mysql;
+            break;
+        case 16: // 12/03/1956 12:30
+            $hh    = substr($datestr, 11, 2);
+            $ii    = substr($datestr, 14, 2);
+            $ss    = '00';
+            break;
+        case 19: // 12/03/1956 12:30:00
+            $hh    = substr($datestr, 11, 2);
+            $ii    = substr($datestr, 14, 2);
+            $ss    = substr($datestr, 17, 2);
+            break;
+        default:
+            $hh    = '00';
+            $ii    = '00';
+            $ss    = '00';
+            break;
+    }
+    $mysql = "$yyyy-$mm-$gg $hh:$ii:$ss";
+
+    return $mysql;
+}
