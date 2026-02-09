@@ -49,7 +49,11 @@ class CreateCrud extends BaseCommand
         }
         $namespace      = CLI::prompt('Which Namespace do you want to Use?', ['App'], 'min_length[3]');
 
-        // $table          = 'prog_vern_ragg';
+        // $table          = 'leghe_colate';
+        // $db_in_use      = 'default';
+        // $namespace = 'Moduli/Trafilerie';
+        // $pk_string = 'leco';
+        // $table          = 'blog';
         // $db_in_use      = 'default';
         // $namespace = 'Moduli/Cairo';
         $table_as_it = $table;
@@ -67,6 +71,9 @@ class CreateCrud extends BaseCommand
         $fields         = $this->getFields($db_in_use, $table_as_it);
         $std_fields     = $this->stdFields($fields);                    //standardize fields
         $primarykey     = $this->getPrimarykey($db_in_use, $table_as_it);
+        if ($pk_string == '') {
+            $pk_string = substr($primarykey, -4);
+        }
         $index_data     = $this->getIndex($db_in_use, $table_as_it, $std_fields);
         if (isset($index_data['std_fields'])) {
             $std_fields = $index_data['std_fields'];
@@ -81,7 +88,7 @@ class CreateCrud extends BaseCommand
             'table'          => $table_as_it,
             'table_lc'       => $table_lc,
             'primaryKey'     => $primarykey,
-            'pk_string'      => substr($primarykey, -4),
+            'pk_string'      => $pk_string,
             'namespace'      => $namespace,
             'bc_path'        => $bc_path,
             'nameEntity'     => ucfirst($table_lc),
@@ -93,15 +100,14 @@ class CreateCrud extends BaseCommand
             'foreignkeys'    => $foreignkeys,
             'views_path'     => $views_path,
         ];
-
-
         $model_data  = $this->getDatesForModel($fields, $foreignkeys, $namespace);
         $table_data  = $this->getDatesForTable($fields);
         $form_input  = $this->getInputForm($fields, $foreignkeys);
         $form_edit  = $this->getEditForm($fields, $foreignkeys);
         $field_data  = $this->getDatesForFields($fields);
         $routes_data = $this->getDatesForRoutes($general_data);
-        $this->data  = array_merge($general_data, $model_data, $table_data, $form_input, $form_edit, $field_data, $routes_data);
+        $migration_data = $this->getDatesForMigration($fields, $primarykey, $foreignkeys, $index_data);
+        $this->data  = array_merge($general_data, $model_data, $table_data, $form_input, $form_edit, $field_data, $routes_data, $migration_data);
         $this->createFileCrud($this->data);
 
 
