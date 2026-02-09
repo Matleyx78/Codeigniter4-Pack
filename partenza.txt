@@ -34,4 +34,3 @@ Create db
 setting env
 updating config/app.php
 updating config/database.php
-no
